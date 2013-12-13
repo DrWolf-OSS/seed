@@ -2,7 +2,7 @@
 
   @import helper._
 
-  @main("Todo list") {
+  @main("Frane") {
 
     <h1>@landslips.size() landslip(s)</h1>
 
@@ -18,11 +18,11 @@
       }
     </li>
 
-      <h2>Add a new landslip</h2>
+      <h2>Aggiungi una frana</h2>
 
       @form(routes.LandslipController.newLandslip()) {
 
-        @inputText(landslipForm("label"))
+        @inputText(landslipForm("name"))
 
           <input type="submit" value="Create">
 

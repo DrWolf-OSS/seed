@@ -18,10 +18,19 @@ public class LandslipController extends Controller {
   }
 
   public static Result newLandslip(){
-    return TODO;
+    Form<Landslip> filledForm = landslipForm.bindFromRequest();
+    if(filledForm.hasErrors()){
+      return badRequest(views.html.Landslips.render(Landslip.all(), filledForm));
+    } else {
+    Logger.info("No error validating the form");
+      Landslip.create(filledForm.get());
+      return redirect(routes.LandslipController.landslips());
+    }
+
   }
 
   public static Result deleteLandslip(Long id){
-    return TODO;
+    Landslip.delete(id);
+    return redirect(routes.LandslipController.landslips());
   }
 }
