@@ -9,6 +9,6 @@ GET     /                           controllers.Application.index()
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 #Landslip
-GET     /landslips                  controllers.Landslip.landslips()
-POST    /landslips                  controllers.Landslip.newLandslip()
-POST    /landslip/:id/delete        controllers.Landslip.deleteLandslip(id: Long)
+GET     /landslips                  controllers.LandslipController.landslips()
+POST    /landslips                  controllers.LandslipController.newLandslip()
+POST    /landslip/:id/delete        controllers.LandslipController.deleteLandslip(id: Long)

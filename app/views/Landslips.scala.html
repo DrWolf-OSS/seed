@@ -1,0 +1,31 @@
+@(landslips: List[Landslip], landslipForm: Form[Landslip])
+
+  @import helper._
+
+  @main("Todo list") {
+
+    <h1>@landslips.size() landslip(s)</h1>
+
+      <ul>
+      @for(landslip <- landslips) {
+        <li>
+          @landslip.name
+
+          @form(routes.LandslipController.deleteLandslip(landslip.id)) {
+            <input type="submit" value="Delete">
+          }
+        </input>
+      }
+    </li>
+
+      <h2>Add a new landslip</h2>
+
+      @form(routes.LandslipController.newLandslip()) {
+
+        @inputText(landslipForm("label"))
+
+          <input type="submit" value="Create">
+
+      }
+
+  }

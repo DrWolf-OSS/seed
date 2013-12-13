@@ -1,6 +1,6 @@
 package models;
 
-import java.utils.*;
+import java.util.*;
 
 public class Landslip {
 
@@ -11,7 +11,7 @@ public class Landslip {
   private String description;
 
   public static List<Landslip> all(){
-    return new arraylist<Landslip>();
+    return new ArrayList<Landslip>();
   }
 
   public static void create(Landslip landslip){
