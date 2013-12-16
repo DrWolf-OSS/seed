@@ -18,7 +18,12 @@ public class Landslip extends Model{
   public String name;
 
   @Column(columnDefinition = "TEXT")
-  private String description;
+  public String description;
+
+
+  @OneToMany(mappedBy = "landslip", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+  @OrderBy("id")
+  public Set<Sensor> sensors = new HashSet<Sensor>();
 
 
   public static Finder<Long,Landslip> find = new Finder(
