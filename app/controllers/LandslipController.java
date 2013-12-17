@@ -33,4 +33,5 @@ public class LandslipController extends Controller {
     Landslip.delete(id);
     return redirect(routes.LandslipController.landslips());
   }
+
 }
