@@ -3,7 +3,6 @@
 # ~~~~
 
 # Home page
-GET     /index                      controllers.Application.index()
 GET     /                           controllers.Application.index()
 
 # Map static resources from the /public folder to the /assets URL path
@@ -13,8 +12,3 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /landslips                  controllers.LandslipController.landslips()
 POST    /landslips                  controllers.LandslipController.newLandslip()
 POST    /landslip/:id/delete        controllers.LandslipController.deleteLandslip(id: Long)
-
-
-#Webjar
-GET     /webjars/*file                    controllers.WebJarAssets.at(file)
-
