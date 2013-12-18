@@ -25,10 +25,10 @@
       @for(landslip <- landslips) {
       <tr>
 
-        <td>@landslip.name</td>
+        <td><a href="@routes.LandslipController.view(landslip.getId())">@landslip.name</a></td>
         <td>@landslip.description</td>
         <td>
-          @form(routes.LandslipController.deleteLandslip(landslip.id)) {
+          @form(routes.LandslipController.deleteLandslip(landslip.getId())) {
             <button type="submit" class="btn btn-default">Elimina</button>
           }
         </td>
