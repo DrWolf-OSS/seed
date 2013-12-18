@@ -5,6 +5,15 @@
   <div class="span10 offset1">
     <p> @landslip.name</p>
     <p> @landslip.description</p>
+    <p>
+      <ul>
+        @for(sensor<- landslip.sensors){
+        <li>
+        @sensor.name
+        </li>
+        }
+      </ul>
+    </p>
   </div>
 
 

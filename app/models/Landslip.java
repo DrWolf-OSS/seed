@@ -45,4 +45,6 @@ public class Landslip extends Model{
   public static Landslip findById(Long id){
     return find.byId(id);
   }
+
+
 }
