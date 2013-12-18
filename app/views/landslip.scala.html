@@ -1,11 +1,10 @@
-@(landslipId: Long)
-
-
+@(landslip: Landslip)
 
   @main("Franes") {
 
   <div class="span10 offset1">
-    <p> @landslipId</p>
+    <p> @landslip.name</p>
+    <p> @landslip.description</p>
   </div>
 
 

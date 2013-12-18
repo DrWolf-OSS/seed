@@ -6,9 +6,7 @@ import play.data.Form;
 import views.html.*;
 import models.*;
 
-
 public class LandslipController extends Controller {
-
 
   static Form<Landslip> landslipForm = Form.form(Landslip.class);
 
@@ -36,7 +34,7 @@ public class LandslipController extends Controller {
 
   public static Result view(Long id){
     Logger.info("vista di ...");
-    return ok(landslip.render(id));
+    return ok(landslip.render(Landslip.findById(id)));
   }
 
 
