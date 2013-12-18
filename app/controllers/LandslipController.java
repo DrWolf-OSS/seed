@@ -34,4 +34,11 @@ public class LandslipController extends Controller {
     return redirect(routes.LandslipController.landslips());
   }
 
+  public static Result view(Long id){
+    Logger.info("vista di ...");
+    return ok(landslip.render(id));
+  }
+
+
+
 }
