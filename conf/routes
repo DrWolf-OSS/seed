@@ -12,3 +12,8 @@ GET     /assets/*file               controllers.Assets.at(path="/public", file)
 GET     /landslips                  controllers.LandslipController.landslips()
 POST    /landslips                  controllers.LandslipController.newLandslip()
 POST    /landslip/:id/delete        controllers.LandslipController.deleteLandslip(id: Long)
+GET     /landslip/:id               controllers.LandslipController.view(id:Long)
+
+#Sensor
+POST    /sensor/:id/delete        controllers.SensorController.delete(id: Long, landslipId: Long)
+POST    /sensor                   controllers.SensorController.newSensor(landslipId: Long)

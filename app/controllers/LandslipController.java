@@ -6,12 +6,10 @@ import play.data.Form;
 import views.html.*;
 import models.*;
 
-
 public class LandslipController extends Controller {
 
-
   static Form<Landslip> landslipForm = Form.form(Landslip.class);
-
+  static Form<Sensor> sensorForm = Form.form(Sensor.class);
 
   public static Result landslips() {
     return ok(views.html.Landslips.render(Landslip.all(), landslipForm));
@@ -33,5 +31,11 @@ public class LandslipController extends Controller {
     Landslip.delete(id);
     return redirect(routes.LandslipController.landslips());
   }
+
+  public static Result view(Long id){
+    return ok(landslip.render(Landslip.findById(id), sensorForm));
+  }
+
+
 
 }

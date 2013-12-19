@@ -42,4 +42,9 @@ public class Landslip extends Model{
     find.ref(id).delete();
   }
 
+  public static Landslip findById(Long id){
+    return find.byId(id);
+  }
+
+
 }
