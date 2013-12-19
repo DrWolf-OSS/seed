@@ -15,5 +15,5 @@ POST    /landslip/:id/delete        controllers.LandslipController.deleteLandsli
 GET     /landslip/:id               controllers.LandslipController.view(id:Long)
 
 #Sensor
-POST    /landslip/:id/delete        controllers.SensorController.delete(id: Long, landslipId: Long)
-POST    /landslip                   controllers.SensorController.newSensor(landslipId: Long)
+POST    /sensor/:id/delete        controllers.SensorController.delete(id: Long, landslipId: Long)
+POST    /sensor                   controllers.SensorController.newSensor(landslipId: Long)

@@ -31,7 +31,7 @@ public class SensorController extends Controller {
 
   public static Result delete(Long id, Long landslipId){
     Sensor.delete(id);
-    return ok(views.html.landslip.render(Landslip.findById(landslipId), sensorForm));
+    return redirect(routes.LandslipController.view(landslipId));
   }
 
 
