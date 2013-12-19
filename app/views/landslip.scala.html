@@ -1,20 +1,42 @@
 @(landslip: Landslip)
+  @import helper._
 
   @main("Franes") {
 
   <div class="span10 offset1">
-    <p> @landslip.name</p>
-    <p> @landslip.description</p>
-    <p>
-      <ul>
-        @for(sensor<- landslip.sensors){
-        <li>
-        @sensor.name
-        </li>
-        }
-      </ul>
-    </p>
+
+  <div class="page-header">
+    <h1>
+      @landslip.name
+      <small>@landslip.description</small>
+    </h1>
   </div>
+
+
+    <div class="span10 offset1">
+      <table class="table table-bordered table-bordered  table-striped">
+        <thead>
+          <tr>
+            <th>nome</th>
+            <th>azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(sensor<- landslip.sensors){
+          <tr>
+            <td>
+            @sensor.name
+            </td>
+            <td>
+              @form(routes.SensorController.delete(sensor.id, landslip.id)) {
+                <button type="submit" class="btn btn-default">Elimina</button>
+              }
+            </td>
+            }
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
 
 
