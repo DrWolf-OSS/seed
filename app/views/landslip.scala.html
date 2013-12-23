@@ -1,16 +1,10 @@
 @(landslip: Landslip, sensorForm: Form[Sensor])
   @import helper._
 
-  @main("Franes") {
+  @main("Franes", landslip.name, landslip.description) {
 
   <div class="span10 offset1">
 
-  <div class="page-header">
-    <h1>
-      @landslip.name
-      <small>@landslip.description</small>
-    </h1>
-  </div>
 
 
     <div class="span10 offset1">
