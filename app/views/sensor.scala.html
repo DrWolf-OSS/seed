@@ -1,0 +1,61 @@
+@(sensor: Sensor, positionForm: Form[Position])
+  @import helper._
+
+  @main("Franes") {
+
+  <div class="span10 offset1">
+
+  <div class="page-header">
+    <h1>
+      @sensor.name
+      <small>@sensor.landslip.name</small>
+    </h1>
+  </div>
+
+
+    <div class="span10 offset1">
+      <table class="table table-bordered table-bordered  table-striped">
+        <thead>
+          <tr>
+            <th>x</th>
+            <th>y</th>
+            <th>z</th>
+            <th>t</th>
+            <th>azioni</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(position<- sensor.positions){
+          <tr>
+            <td>@position.x</td>
+            <td>@position.y</td>
+            <td>@position.z</td>
+            <td>@position.t</td>
+            <td>
+              @form(routes.PositionController.delete(position.id, sensor.id)) {
+                <button type="submit" class="btn btn-default">Elimina</button>
+              }
+            </td>
+            }
+          </tr>
+
+
+          <tr>
+            @form(routes.PositionController.newPosition(sensor.id)){
+              <td>@inputText(positionForm("x"), '_label -> "")</td>
+              <td>@inputText(positionForm("y"), '_label -> "")</td>
+              <td>@inputText(positionForm("z"), '_label -> "")</td>
+              <td>@inputText(positionForm("t"), '_label -> "")</td>
+              <td><input type="submit" value="Crea nuovo" class="btn btn-default"></td>
+            }
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+
+
+  }
+
+
+

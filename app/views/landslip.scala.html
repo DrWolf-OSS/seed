@@ -17,16 +17,14 @@
       <table class="table table-bordered table-bordered  table-striped">
         <thead>
           <tr>
-            <th>nome</th>
+            <th>nome sensore</th>
             <th>azioni</th>
           </tr>
         </thead>
         <tbody>
           @for(sensor<- landslip.sensors){
           <tr>
-            <td>
-            @sensor.name
-            </td>
+          <td><a href="@routes.SensorController.view(sensor.id)">@sensor.name</a></td>
             <td>
               @form(routes.SensorController.delete(sensor.id, landslip.id)) {
                 <button type="submit" class="btn btn-default">Elimina</button>

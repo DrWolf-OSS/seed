@@ -9,6 +9,7 @@ import models.*;
 public class SensorController extends Controller {
 
   static Form<Sensor> sensorForm = Form.form(Sensor.class);
+  static Form<Position> positionForm = Form.form(Position.class);
 
 
   public static Result sensors(Long landslipId) {
@@ -22,7 +23,7 @@ public class SensorController extends Controller {
       return TODO;
     } else {
       Sensor sensor = filledForm.get();
-      sensor.setLandslip(landslip);
+      sensor.landslip = landslip;
       Sensor.create(filledForm.get());
       return redirect(routes.LandslipController.view(landslipId));
     }
@@ -34,5 +35,7 @@ public class SensorController extends Controller {
     return redirect(routes.LandslipController.view(landslipId));
   }
 
-
+  public static Result view(Long id){
+    return ok(sensor.render(Sensor.findById(id), positionForm));
+  }
 }

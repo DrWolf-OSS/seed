@@ -40,5 +40,8 @@ public class Sensor extends Model{
     find.ref(id).delete();
   }
 
+  public static Sensor findById(Long id){
+    return find.byId(id);
+  }
 
 }
