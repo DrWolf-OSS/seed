@@ -9,7 +9,7 @@ body .modal {
   /* place center */
   margin-left:auto;
   margin-right:auto;
-
+  display: none;
 }
 
 .modal-footer{
