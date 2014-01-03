@@ -1,67 +1,92 @@
 @(landslip: Landslip, sensorForm: Form[Sensor])
-  @import helper._
+@import helper._
 
-  @main("Franes", landslip.name, landslip.description) {
+@main("Franes", landslip.name, landslip.description) {
+
+<div class="span10 offset1">
+
+
 
   <div class="span10 offset1">
-
-
-
-    <div class="span10 offset1">
-      <table class="table table-bordered table-bordered  table-striped">
-        <thead>
-          <tr>
-            <th>nome sensore</th>
-            <th>azioni</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for(sensor<- landslip.sensors){
-          <tr>
+    <table class="table table-bordered table-bordered  table-striped">
+      <thead>
+        <tr>
+          <th>nome sensore</th>
+          <th>azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(sensor<- landslip.sensors){
+        <tr>
           <td><a href="@routes.SensorController.view(sensor.id)">@sensor.name</a></td>
-            <td>
-              @form(routes.SensorController.delete(sensor.id, landslip.id)) {
-                <button type="submit" class="btn btn-default">Elimina</button>
-              }
-            </td>
+          <td>
+            @form(routes.SensorController.delete(sensor.id, landslip.id)) {
+            <button type="submit" class="btn btn-default">Elimina</button>
             }
-          </tr>
+          </td>
+          }
+        </tr>
 
 
-          <tr>
-            @form(routes.SensorController.newSensor(landslip.id)){
-              <td>@inputText(sensorForm("name"), '_label -> "")</td>
-              <td><input type="submit" value="Crea nuovo sensore" class="btn btn-default"></td>
-            }
-          </tr>
-        </tbody>
-      </table>
+        <tr>
+          @form(routes.SensorController.newSensor(landslip.id)){
+          <td>@inputText(sensorForm("name"), '_label -> "")</td>
+          <td><input type="submit" value="Crea nuovo sensore" class="btn btn-default"></td>
+          }
+        </tr>
+      </tbody>
+    </table>
 
-      <button class="btn btn-default" data-toggle="modal" data-target="#graphModal">
-        Visualizza il grafico
-      </button>
-
-    </div>
-
+    <button class="btn btn-default" data-toggle="modal" data-target="#graphModal">
+      Visualizza il grafico
+    </button>
+  </div>
 
 
-    <div class="modal fade" id="graphModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title"></h4><!-- serve per la spaziatura verticale-->
-          </div>
-          <div class="modal-body">
-            <p>Graph under contruction!</p>
-            <canvas id="graphCanvas" class="canvas"/>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+
+  <div class="modal fade" id="graphModal">
+    <div class="modal-dialog">
+      <div class="modal-content" id="modalContent">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title"></h4><!-- serve per la spaziatura verticale-->
+        </div>
+        <div class="modal-body" id="modalbody">
+          <p>Graph under contruction!</p>
+          <script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
+          <script>
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth/2, window.innerHeight/2);
+            document.getElementById('modalbody').appendChild(renderer.domElement);
+
+            var geometry = new THREE.CubeGeometry(1,1,1);
+            var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+            var cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+
+            camera.position.z = 3;
+
+            var render = function () {
+              requestAnimationFrame(render);
+
+              cube.rotation.x += 0.1;
+              cube.rotation.y += 0.1;
+
+              renderer.render(scene, camera);
+            };
+
+            render();
+          </script>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
   }
 
