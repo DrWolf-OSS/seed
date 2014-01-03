@@ -12,6 +12,9 @@ body .modal {
   display: none;
 }
 
+.modal-body {
+  max-height: 10%;
+}
 .modal-footer{
   position: absolute;
   top: 100;
@@ -20,4 +23,10 @@ body .modal {
   right: 0;
   margin: auto;
 
+}
+
+.canvas{
+  width: 90%;
+  max-height: 80%;
+  border: 1px solid #000000;
 }
