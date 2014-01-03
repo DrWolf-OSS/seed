@@ -55,6 +55,18 @@
           <p>Graph under contruction!</p>
           <script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
           <script>
+            var positions = new Array();
+            var i = 0;
+            @for(sensor<- landslip.sensors){
+              @for(position<- sensor.positions){
+                @if(position.t==1){
+                  positions[i][1] = @position.x;
+                  positions[i][2] = @position.y;
+                  positions[i][3] = @position.z;
+                }
+              }
+            }
+            alert(positions[i]);
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
@@ -80,6 +92,10 @@
 
             render();
           </script>
+
+
+
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
