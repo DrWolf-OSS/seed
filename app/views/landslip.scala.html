@@ -60,9 +60,11 @@
             @for(sensor<- landslip.sensors){
               @for(position<- sensor.positions){
                 @if(position.t==1){
-                  positions[i][1] = @position.x;
-                  positions[i][2] = @position.y;
-                  positions[i][3] = @position.z;
+                  positions[i] = new Array(4);
+                  positions[i][0] = @position.x;
+                  positions[i][1] = @position.y;
+                  positions[i][2] = @position.z;
+                  positions[i][3] = @position.t;
                 }
               }
             }
