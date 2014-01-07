@@ -56,19 +56,7 @@
           <script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
           <script>
             var positions = new Array();
-            var i = 0;
-            @for(sensor<- landslip.sensors){
-              @for(position<- sensor.positions){
-                @if(position.t==1){
-                  positions[i] = new Array(4);
-                  positions[i][0] = @position.x;
-                  positions[i][1] = @position.y;
-                  positions[i][2] = @position.z;
-                  positions[i][3] = @position.t;
-                }
-              }
-            }
-            alert(positions[i]);
+
             var scene = new THREE.Scene();
             var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 
@@ -76,19 +64,42 @@
             renderer.setSize(window.innerWidth/2, window.innerHeight/2);
             document.getElementById('modalbody').appendChild(renderer.domElement);
 
-            var geometry = new THREE.CubeGeometry(1,1,1);
-            var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-            var cube = new THREE.Mesh(geometry, material);
-            scene.add(cube);
+            var geom = new THREE.Geometry();
 
-            camera.position.z = 3;
+            var i = 0;
+            @for(sensor<- landslip.sensors){
+              @for(position<- sensor.positions){
+                @if(position.t==1){
+                  positions[i] = new Array(4);
+                  geom.vertices.push( new THREE.Vector3( @position.x,   @position.y, @position.z ));
+                }
+              }
+              i++;
+            }
+
+
+            geom.faces.push( new THREE.Face3( 0, 1, 2 ) );
+
+            geom.computeFaceNormals();
+
+
+
+
+            var object = new THREE.Mesh( geom, new THREE.MeshNormalMaterial() );
+
+            object.position.z = -10;//move a bit back - size of 500 is a bit big
+            object.rotation.y = -Math.PI * .5;//triangle is pointing in depth, rotate it -90 degrees on Y
+
+            scene.add(object);
+
+
+            camera.position.z = 30;
 
             var render = function () {
               requestAnimationFrame(render);
 
-              cube.rotation.x += 0.1;
-              cube.rotation.y += 0.1;
-
+              object.rotation.x += 0.1;
+              object.rotation.y += 0.1;
               renderer.render(scene, camera);
             };
 
