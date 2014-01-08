@@ -34,8 +34,8 @@ function init(positions){
 
   var object = new THREE.Mesh( geom, new THREE.MeshNormalMaterial() );
 
-  object.position.z = -10;//move a bit back - size of 500 is a bit big
-  object.rotation.y = -Math.PI * .5;//triangle is pointing in depth, rotate it -90 degrees on Y
+  object.position.z = -50;//move a bit back - size of 500 is a bit big
+  object.rotation.y = -Math.PI * .3;//triangle is pointing in depth, rotate it -90 degrees on Y
 
   scene.add(object);
 
@@ -45,8 +45,6 @@ function init(positions){
   var render = function () {
     requestAnimationFrame(render);
 
-    object.rotation.x += 0.1;
-    object.rotation.y += 0.1;
     renderer.render(scene, camera);
   };
 
