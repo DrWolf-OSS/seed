@@ -11,8 +11,10 @@ function init(positions){
   document.getElementById('modalbody').appendChild(renderer.domElement);
 
   makeParticles(positions);
-  camera.position.z = 30;
-
+  camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+  camera.position.y = 0;
+  camera.position.x = 0;
+  camera.position.z = 600;
   var render = function () {
     requestAnimationFrame(render);
 
@@ -43,26 +45,21 @@ function initRenderer(){
 function makeParticles(positions){
 
   for(i in positions){
-    console.log('qui');
-    // we make a particle material and pass through the
-    // colour and custom particle render function we defined.
-    material = new THREE.ParticleCanvasMaterial( { color: Math.random() * 0x808008 + 0x808080, program: particleRender } );
-    // make the particle
-    particle = new THREE.Particle(material);
+    var material = new THREE.MeshBasicMaterial( { color: Math.random() * 0x808008 + 0x808080 } );
+    object = new THREE.Mesh( new THREE.TetrahedronGeometry( 75, 0 ), material );
+    object.position.set( 200, 0, 200 );
+    
 
-    //  particle position
-    particle.position.x = positions[i][0];
-    particle.position.y = positions[i][1];
-    particle.position.z = positions[i][2];
+    object.position.x = positions[i][0];
+    object.position.y = positions[i][1];
+    object.position.z = positions[i][2];
 
-    // scale it up a bit
-    particle.scale.x = particle.scale.y = 5;
 
     // add it to the scene
-    scene.add( particle );
+    scene.add( object );
 
     // and to the array of particles.
-    particles.push(particle);
+    particles.push(object);
   }
 };
 
