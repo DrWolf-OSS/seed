@@ -1,5 +1,7 @@
   var scene;
   var camera;
+  var controls;
+
 
   // an array to store our particles in
   particles = [];
@@ -9,19 +11,36 @@ function init(positions){
   initRenderer();
 
   document.getElementById('modalbody').appendChild(renderer.domElement);
-
+  
+  //CONTROLS
+  controls = new THREE.TrackballControls( camera );
+  controls.rotateSpeed = 1.0;
+  controls.zoomSpeed = 1.2;
+  controls.panSpeed = 0.8;
+  controls.noZoom = false;
+  controls.noPan = false;
+  controls.staticMoving = true;
+  controls.dynamicDampingFactor = 0.3;
+  controls.keys = [ 65, 83, 68 ];
+  controls.addEventListener( 'change', render );
+  
+  
+  animate();
+  
   makeParticles(positions);
+  
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
   camera.position.y = 0;
   camera.position.x = 0;
   camera.position.z = 600;
-  var render = function () {
-    requestAnimationFrame(render);
-
-    renderer.render(scene, camera);
-  };
 
   render();
+};
+
+function render() {
+  requestAnimationFrame(render);
+  controls.update();
+  renderer.render(scene, camera);
 };
 
 function initRenderer(){
@@ -35,7 +54,7 @@ function initRenderer(){
       console.log('CanvasRenderer');
       renderer = new THREE.CanvasRenderer();
     } else {
-
+      console.log('WebGlRenderer')
       renderer = new THREE.WebGLRenderer();
     }
   }
@@ -73,4 +92,10 @@ function particleRender( context ) {
     context.fill();
 };
 
+function animate() {
 
+  requestAnimationFrame( animate );
+  console.log('passo da animate');
+  controls.update();
+
+}
