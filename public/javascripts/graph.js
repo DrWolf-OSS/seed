@@ -33,14 +33,9 @@ function init(positions){
   
 
   // renderer
-  //initRenderer();
+  initRenderer();
 
-  renderer = new THREE.WebGLRenderer( { antialias: false } );
-  renderer.setClearColor( scene.fog.color, 1 );
-  renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
   
-  container = document.getElementById( 'container' );
-  container.appendChild( renderer.domElement );
   animate();
 };
 
@@ -50,25 +45,28 @@ function render() {
   renderer.render(scene, camera);
 };
 
-/*
+
 function initRenderer(){
-  console.log('non e possibile');
+  
   if (window.WebGLRenderingContext){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("webgl");
-    if (true || !ctx) {
+    if ( !ctx) {
       console.log('CanvasRenderer');
       renderer = new THREE.CanvasRenderer();
     } else {
       console.log('WebGlRenderer')
       renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
-  renderer.setClearColor( scene.fog.color, 1 );
-  renderer.setSize( window.innerWidth, window.innerHeight );
   }
-  renderer.setSize(window.innerWidth/2, window.innerHeight/2);
+  renderer.setSize( window.innerWidth, window.innerHeight/1.5 );
+  renderer.setClearColor( scene.fog.color, 1 );
+
+  container = document.getElementById( 'container' );
+  container.appendChild( renderer.domElement );
+
 };
-*/
+
 function makeParticles(positions){
 
   for(i in positions){
