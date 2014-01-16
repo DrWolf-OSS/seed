@@ -1,16 +1,18 @@
   var scene;
-  var camera;
-  var controls;
+  var container;
+  var camera, controls, scene, renderer;
 
 
   // an array to store our particles in
   particles = [];
-
+  init();
 function init(positions){
+      
+  // world
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
 
-  initRenderer();
 
-  document.getElementById('modalbody').appendChild(renderer.domElement);
   
   //CONTROLS
   controls = new THREE.TrackballControls( camera );
@@ -24,9 +26,6 @@ function init(positions){
   controls.keys = [ 65, 83, 68 ];
   controls.addEventListener( 'change', render );
   
-  
-  animate();
-  
   makeParticles(positions);
   
   camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
@@ -34,19 +33,22 @@ function init(positions){
   camera.position.x = 0;
   camera.position.z = 600;
 
-  render();
+  // renderer
+  initRenderer();
+  container = document.getElementById( 'container' );
+  container.appendChild( renderer.domElement );
+  animate();
 };
 
 function render() {
-  requestAnimationFrame(render);
+//  requestAnimationFrame(render);
   controls.update();
   renderer.render(scene, camera);
 };
 
+
 function initRenderer(){
 
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
   if (window.WebGLRenderingContext){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("webgl");
@@ -55,8 +57,10 @@ function initRenderer(){
       renderer = new THREE.CanvasRenderer();
     } else {
       console.log('WebGlRenderer')
-      renderer = new THREE.WebGLRenderer();
+      renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
+  renderer.setClearColor( scene.fog.color, 1 );
+  renderer.setSize( window.innerWidth, window.innerHeight );
   }
   renderer.setSize(window.innerWidth/2, window.innerHeight/2);
 };
@@ -82,20 +86,8 @@ function makeParticles(positions){
   }
 };
 
-function particleRender( context ) {
-
-    // we get passed a reference to the canvas context
-    context.beginPath();
-    // and we just have to draw our shape at 0,0 - in this
-    // case an arc from 0 to 2Pi radians or 360º - a full circle!
-    context.arc( 0, 0, 1, 0,  Math.PI * 2, true );
-    context.fill();
-};
 
 function animate() {
-
   requestAnimationFrame( animate );
-  console.log('passo da animate');
   controls.update();
-
 }
