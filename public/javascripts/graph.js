@@ -5,15 +5,13 @@
 
   // an array to store our particles in
   particles = [];
-  init();
+
 function init(positions){
       
-  // world
-  scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
 
+  camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
+  camera.position.z = 500;
 
-  
   //CONTROLS
   controls = new THREE.TrackballControls( camera );
   controls.rotateSpeed = 1.0;
@@ -26,15 +24,21 @@ function init(positions){
   controls.keys = [ 65, 83, 68 ];
   controls.addEventListener( 'change', render );
   
+  // world
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+  
+  
   makeParticles(positions);
   
-  camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
-  camera.position.y = 0;
-  camera.position.x = 0;
-  camera.position.z = 600;
 
   // renderer
-  initRenderer();
+  //initRenderer();
+
+  renderer = new THREE.WebGLRenderer( { antialias: false } );
+  renderer.setClearColor( scene.fog.color, 1 );
+  renderer.setSize( window.innerWidth/2, window.innerHeight/2 );
+  
   container = document.getElementById( 'container' );
   container.appendChild( renderer.domElement );
   animate();
@@ -46,9 +50,9 @@ function render() {
   renderer.render(scene, camera);
 };
 
-
+/*
 function initRenderer(){
-
+  console.log('non e possibile');
   if (window.WebGLRenderingContext){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("webgl");
@@ -64,7 +68,7 @@ function initRenderer(){
   }
   renderer.setSize(window.innerWidth/2, window.innerHeight/2);
 };
-
+*/
 function makeParticles(positions){
 
   for(i in positions){
@@ -90,4 +94,8 @@ function makeParticles(positions){
 function animate() {
   requestAnimationFrame( animate );
   controls.update();
+}
+
+function render() {
+  renderer.render( scene, camera );
 }
