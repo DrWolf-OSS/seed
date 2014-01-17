@@ -8,7 +8,11 @@
 
 function init(positions){
       
+  // world
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
 
+  //CAMERA
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
   camera.position.z = 500;
 
@@ -23,55 +27,20 @@ function init(positions){
   controls.dynamicDampingFactor = 0.3;
   controls.keys = [ 65, 83, 68 ];
   controls.addEventListener( 'change', render );
-  
-  // world
-  scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
  
-  // LIGHTS
-  
-  hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
-  hemiLight.color.setHSL( 0.6, 1, 0.6 );
-  hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
-  hemiLight.position.set( 0, 500, 0 );
-  scene.add( hemiLight );
+  scene.add( new THREE.AmbientLight( 0x202020 ) );
 
-  
+  var directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
 
-  dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
-  dirLight.color.setHSL( 0.1, 1, 0.95 );
-  dirLight.position.set( -1, 1.75, 1 );
-  dirLight.position.multiplyScalar( 50 );
-  scene.add( dirLight );
+  directionalLight.position.x = Math.random() - 0.5;
+  directionalLight.position.y = Math.random() - 0.5;
+  directionalLight.position.z = Math.random() - 0.5;
 
-  dirLight.castShadow = true;
+  directionalLight.position.normalize();
 
-  dirLight.shadowMapWidth = 2048;
-  dirLight.shadowMapHeight = 2048;
-  var d = 50;
+  scene.add( directionalLight );
 
-  dirLight.shadowCameraLeft = -d;
-  dirLight.shadowCameraRight = d;
-  dirLight.shadowCameraTop = d;
-  dirLight.shadowCameraBottom = -d;
-
-  dirLight.shadowCameraFar = 3500;
-  dirLight.shadowBias = -0.0001;
-  dirLight.shadowDarkness = 0.35;
-  dirLight.shadowCameraVisible = true;
-
-  // GROUND
-
-  var groundGeo = new THREE.PlaneGeometry( 10000, 10000 );
-  var groundMat = new THREE.MeshPhongMaterial( { ambient: 0xffffff, color: 0xffffff, specular: 0x050505 } );
-  groundMat.color.setHSL( 0.095, 1, 0.75 );
-
-  var ground = new THREE.Mesh( groundGeo, groundMat );
-  ground.rotation.x = -Math.PI/2;
-  ground.position.y = -33;
-  scene.add( ground );
-
-  ground.receiveShadow = true; 
+  makeGround();
   makeParticles(positions);
   
 
@@ -88,6 +57,24 @@ function render() {
   renderer.render(scene, camera);
 };
 
+function makeGround(){
+  var line_material = new THREE.LineBasicMaterial( { color: 0x303030 } ),
+      geometry = new THREE.Geometry(),
+      floor = -75, step = 25;
+
+  for ( var i = 0; i <= 40; i ++ ) {
+
+    geometry.vertices.push( new THREE.Vector3( - 500, floor, i * step - 500 ) );
+    geometry.vertices.push( new THREE.Vector3(   500, floor, i * step - 500 ) );
+
+    geometry.vertices.push( new THREE.Vector3( i * step - 500, floor, -500 ) );
+    geometry.vertices.push( new THREE.Vector3( i * step - 500, floor,  500 ) );
+
+  }
+
+  var line = new THREE.Line( geometry, line_material, THREE.LinePieces );
+  scene.add( line );
+}
 
 function initRenderer(){
   
@@ -113,9 +100,8 @@ function initRenderer(){
 function makeParticles(positions){
 
   for(i in positions){
-    var material = new THREE.MeshBasicMaterial( { color: Math.random() * 0x808008 + 0x808080 } );
+    var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
     var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
-    //var object = new THREE.TetrahedronGeometry(40, 0);
     object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
     
     object.position.x = positions[i][0];
