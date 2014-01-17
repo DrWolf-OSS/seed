@@ -114,15 +114,14 @@ function makeParticles(positions){
 
   for(i in positions){
     var material = new THREE.MeshBasicMaterial( { color: Math.random() * 0x808008 + 0x808080 } );
-    object = new THREE.Mesh( new THREE.TetrahedronGeometry( 75, 0 ), material );
-    object.position.set( 200, 0, 200 );
+    var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
+    //var object = new THREE.TetrahedronGeometry(40, 0);
+    object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
     
-
     object.position.x = positions[i][0];
     object.position.y = positions[i][1];
     object.position.z = positions[i][2];
-
-
+    
     // add it to the scene
     scene.add( object );
 
