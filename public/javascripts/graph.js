@@ -10,7 +10,7 @@ function init(positions){
       
   // world
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+  scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
 
   //CAMERA
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -100,7 +100,7 @@ function initRenderer(){
 function makeParticles(positions){
 
   for(i in positions){
-    var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#006063', shininess: 100  } );
+    var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
     var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
     object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
     
