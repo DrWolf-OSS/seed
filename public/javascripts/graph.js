@@ -11,7 +11,7 @@ function init(positions){
   // world
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
-  
+
   //CAMERA
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
   camera.position.z = 500;
@@ -27,7 +27,19 @@ function init(positions){
   controls.dynamicDampingFactor = 0.3;
   controls.keys = [ 65, 83, 68 ];
   controls.addEventListener( 'change', render );
-  
+ 
+  scene.add( new THREE.AmbientLight( 0x202020 ) );
+
+  var directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
+
+  directionalLight.position.x = Math.random() - 0.5;
+  directionalLight.position.y = Math.random() - 0.5;
+  directionalLight.position.z = Math.random() - 0.5;
+
+  directionalLight.position.normalize();
+
+  scene.add( directionalLight );
+
   makeGround();
   makeParticles(positions);
   
@@ -88,9 +100,8 @@ function initRenderer(){
 function makeParticles(positions){
 
   for(i in positions){
-    var material = new THREE.MeshBasicMaterial( { color: Math.random() * 0x808008 + 0x808080 } );
+    var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#006063', shininess: 100  } );
     var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
-    //var object = new THREE.TetrahedronGeometry(40, 0);
     object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
     
     object.position.x = positions[i][0];
