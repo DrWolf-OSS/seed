@@ -89,7 +89,7 @@ function initRenderer(){
       renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
   }
-  renderer.setSize( window.innerWidth, window.innerHeight/1.5 );
+  renderer.setSize( window.innerWidth/1.2, window.innerHeight/1.5 );
   renderer.setClearColor( scene.fog.color, 1 );
 
   container = document.getElementById( 'container' );

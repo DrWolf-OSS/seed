@@ -30,3 +30,11 @@ body .modal {
   max-height: 80%;
   border: 1px solid #000000;
 }
+
+.slider .slider-selection{
+  background: #BABABA;
+}
+
+span.leftAlign {
+  float: left;
+}
