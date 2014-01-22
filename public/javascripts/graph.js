@@ -1,7 +1,7 @@
   var scene;
   var container;
   var camera, controls, scene, renderer;
-
+  var time=1;
 
   // an array to store our particles in
   particles = [];
@@ -17,16 +17,7 @@ function init(positions){
   camera.position.z = 500;
 
   //CONTROLS
-  controls = new THREE.TrackballControls( camera );
-  controls.rotateSpeed = 1.0;
-  controls.zoomSpeed = 1.2;
-  controls.panSpeed = 0.8;
-  controls.noZoom = false;
-  controls.noPan = false;
-  controls.staticMoving = true;
-  controls.dynamicDampingFactor = 0.3;
-  controls.keys = [ 65, 83, 68 ];
-  controls.addEventListener( 'change', render );
+  makeControls();
  
   scene.add( new THREE.AmbientLight( 0x202020 ) );
 
@@ -56,6 +47,21 @@ function render() {
   controls.update();
   renderer.render(scene, camera);
 };
+
+function makeControls(){
+
+  controls = new THREE.TrackballControls( camera );
+  controls.rotateSpeed = 1.0;
+  controls.zoomSpeed = 1.2;
+  controls.panSpeed = 0.8;
+  controls.noZoom = false;
+  controls.noPan = false;
+  controls.staticMoving = true;
+  controls.dynamicDampingFactor = 0.3;
+  controls.keys = [ 65, 83, 68 ];
+  controls.addEventListener( 'change', render );
+}
+
 
 function makeGround(){
   var line_material = new THREE.LineBasicMaterial( { color: 0x303030 } ),
@@ -103,11 +109,13 @@ function makeParticles(positions){
     var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
     var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
     object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
-    
-    object.position.x = positions[i][0];
-    object.position.y = positions[i][1];
-    object.position.z = positions[i][2];
-    
+    if(typeof positions[i][1] != 'undefined') {
+
+      object.position.x = positions[i][time][0];
+      object.position.y = positions[i][time][1];
+      object.position.z = positions[i][time][2];
+    }    
+
     // add it to the scene
     scene.add( object );
 
@@ -125,3 +133,5 @@ function animate() {
 function render() {
   renderer.render( scene, camera );
 }
+
+

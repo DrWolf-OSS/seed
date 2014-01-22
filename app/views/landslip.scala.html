@@ -61,14 +61,16 @@
 
             var positions = new Array();
             var i = 0;
+            var time = 0;
+
             @for(sensor<- landslip.sensors){
+              positions[i] = new Array();
               @for(position<- sensor.positions){
-                @if(position.t==1){
-                  positions[i] = new Array(4);
-                  positions[i][0] = @position.x;
-                  positions[i][1] = @position.y;
-                  positions[i][2] = @position.z;
-                }
+                time = @position.t;
+                positions[i][time] = new Array(3);
+                positions[i][time][0] = @position.x;
+                positions[i][time][1] = @position.y;
+                positions[i][time][2] = @position.z;
               }
               i++;
             }
