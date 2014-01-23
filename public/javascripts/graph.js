@@ -1,13 +1,19 @@
-  var scene;
+  var scene
   var container;
   var camera, controls, scene, renderer;
-  var time=1;
+
+
 
   // an array to store our particles in
   particles = [];
 
 function init(positions){
       
+  var time=1;
+
+  // set maxTime
+  var maxTime = setMaxTime(positions);
+
   // world
   scene = new THREE.Scene();
   scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
@@ -32,13 +38,11 @@ function init(positions){
   scene.add( directionalLight );
 
   makeGround();
-  makeParticles(positions);
+  updateParticles(positions, time);
   
 
   // renderer
   initRenderer();
-
-  
   animate();
 };
 
@@ -103,35 +107,63 @@ function initRenderer(){
 
 };
 
-function makeParticles(positions){
+function createParticle(time){
 
-  for(i in positions){
-    var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
-    var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
-    object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
-    if(typeof positions[i][1] != 'undefined') {
+  var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
+  var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
+  object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
 
-      object.position.x = positions[i][time][0];
-      object.position.y = positions[i][time][1];
-      object.position.z = positions[i][time][2];
-    }    
+  // add it to the scene
+  scene.add( object );
 
-    // add it to the scene
-    scene.add( object );
-
-    // and to the array of particles.
-    particles.push(object);
-  }
+  // and to the array of particles.
+  particles[time] = (object);
+  
+  return particles[time];
 };
 
 
 function animate() {
   requestAnimationFrame( animate );
+  render();
   controls.update();
 }
+
 
 function render() {
   renderer.render( scene, camera );
 }
 
+function updateParticles(positions, time){
+  // Search right time position for every sensor
+  for(var i = 0; i<positions.length; i++){
+    // check if detection is present
+    if(positions[i][time]!=null){
+      var position = positions[i][time];
+      if(particles[i]== null ){
+        // Particle not already drawn, create it 
+        particles[i] = createParticle(time);
+      }
+      //update, in any case   
+      setParticlePosition(particles[i], position);
+    }
+  }
+}
+
+function setParticlePosition(particle, position){
+  particle.position.x = position[0]
+  particle.position.y = position[1]
+  particle.position.z = position[2]
+}
+
+function setMaxTime(positions){
+  maxTime = 0; 
+  for(var i = 0; i< positions.length; i++){
+    var sensor = positions[i];
+    if(sensor.length > maxTime){
+      maxTime = sensor.length;
+    }
+  }
+  return maxTime;
+}
 
