@@ -2,17 +2,20 @@
   var container;
   var camera, controls, scene, renderer;
 
-
+ function Mover(parallel, time, maxtime){
+   this.parallel = parallel;
+   this.time = time;
+   this.maxtime = maxtime;
+ }
 
   // an array to store our particles in
   particles = [];
 
 function init(positions){
-      
-  var time=1;
+  var mover = new Mover(new Parallel(), 1 , 0)
 
   // set maxTime
-  var maxTime = setMaxTime(positions);
+  setMaxTime(positions, mover);
 
   // world
   scene = new THREE.Scene();
@@ -38,12 +41,13 @@ function init(positions){
   scene.add( directionalLight );
 
   makeGround();
-  updateParticles(positions, time);
+  updateParticles(positions, mover);
   
 
   // renderer
   initRenderer();
-  animate();
+  animate(time);
+  mover.parallel.start();
 };
 
 function render() {
@@ -107,7 +111,7 @@ function initRenderer(){
 
 };
 
-function createParticle(time){
+function createParticle(mover){
 
   var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
   var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
@@ -123,7 +127,7 @@ function createParticle(time){
 };
 
 
-function animate() {
+function animate(time) {
   requestAnimationFrame( animate );
   render();
   controls.update();
@@ -134,36 +138,46 @@ function render() {
   renderer.render( scene, camera );
 }
 
-function updateParticles(positions, time){
+function updateParticles(positions, mover){
+  // remove all previus tweens
+  TWEEN.removeAll();
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
     // check if detection is present
     if(positions[i][time]!=null){
       var position = positions[i][time];
+      var nextPosition = positions[i][(time+1)%position.length];
       if(particles[i]== null ){
         // Particle not already drawn, create it 
-        particles[i] = createParticle(time);
+        particles[i] = createParticle(mover);
       }
       //update, in any case   
-      setParticlePosition(particles[i], position);
+      setParticlePosition(particles[i], position, nextPosition,mover);
+
     }
   }
 }
 
-function setParticlePosition(particle, position){
+function setParticlePosition(particle, position, nextPosition,mover){
+  // TODO: E' necessario impostare la posizione o basta quella nel tween?
   particle.position.x = position[0]
   particle.position.y = position[1]
   particle.position.z = position[2]
+  var tween = new TWEEN.Tween(position[0]).to(nextPosition[0], 2000);
+  var p = new Parallel();
+  p.addChild(tween);
+  mover.parallel.addChild(tween);
 }
 
-function setMaxTime(positions){
-  maxTime = 0; 
+function setMaxTime(positions, mover){
+  max = 0; 
   for(var i = 0; i< positions.length; i++){
     var sensor = positions[i];
-    if(sensor.length > maxTime){
-      maxTime = sensor.length;
+    if(sensor.length > max){
+      max = sensor.length;
     }
   }
-  return maxTime;
+  return mover.maxTime = max;
 }
+
 
