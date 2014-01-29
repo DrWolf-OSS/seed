@@ -2,20 +2,18 @@
   var container;
   var camera, controls, scene, renderer;
 
- function Mover(parallel, time, maxtime){
-   this.parallel = parallel;
-   this.time = time;
-   this.maxtime = maxtime;
- }
-
-  // an array to store our particles in
-  particles = [];
+  function Marker(particle, tween){
+    this.particle = particle;
+    this.tween = tween;
+  }
 
 function init(positions){
-  var mover = new Mover(new Parallel(), 1 , 0)
+  
+  //init markers
+  var markers = new Array();
 
   // set maxTime
-  setMaxTime(positions, mover);
+  setMaxTime(positions);
 
   // world
   scene = new THREE.Scene();
@@ -41,13 +39,12 @@ function init(positions){
   scene.add( directionalLight );
 
   makeGround();
-  updateParticles(positions, mover);
+  markers = updateMarkers(positions, markers);
   
 
   // renderer
   initRenderer();
   animate(time);
-  mover.parallel.start();
 };
 
 function render() {
@@ -96,10 +93,8 @@ function initRenderer(){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("webgl");
     if ( !ctx) {
-      console.log('CanvasRenderer');
       renderer = new THREE.CanvasRenderer();
     } else {
-      console.log('WebGlRenderer')
       renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
   }
@@ -111,7 +106,7 @@ function initRenderer(){
 
 };
 
-function createParticle(mover){
+function createMarker(){
 
   var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
   var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
@@ -119,11 +114,8 @@ function createParticle(mover){
 
   // add it to the scene
   scene.add( object );
-
-  // and to the array of particles.
-  particles[time] = (object);
   
-  return particles[time];
+  return new Marker(object, new TWEEN.Tween());
 };
 
 
@@ -138,38 +130,36 @@ function render() {
   renderer.render( scene, camera );
 }
 
-function updateParticles(positions, mover){
-  // remove all previus tweens
-  TWEEN.removeAll();
+function updateMarkers(positions, markers){
+  
+  
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
     // check if detection is present
     if(positions[i][time]!=null){
       var position = positions[i][time];
       var nextPosition = positions[i][(time+1)%position.length];
-      if(particles[i]== null ){
+      if(markers[i]== null ){
         // Particle not already drawn, create it 
-        particles[i] = createParticle(mover);
+        markers[i] = createMarker();
       }
       //update, in any case   
-      setParticlePosition(particles[i], position, nextPosition,mover);
+      setParticlePosition(markers[i], positions, nextPosition);
 
     }
   }
+  return markers;
 }
 
-function setParticlePosition(particle, position, nextPosition,mover){
+function setParticlePosition(marker, position, nextPosition){
   // TODO: E' necessario impostare la posizione o basta quella nel tween?
-  particle.position.x = position[0]
-  particle.position.y = position[1]
-  particle.position.z = position[2]
-  var tween = new TWEEN.Tween(position[0]).to(nextPosition[0], 2000);
-  var p = new Parallel();
-  p.addChild(tween);
-  mover.parallel.addChild(tween);
+  marker.particle.position.x = position[0]
+  marker.particle.position.y = position[1]
+  marker.particle.position.z = position[2]
+  marker.tween = new TWEEN.Tween( { x: position[0], y: position[1], z: position[2]} ).to( { x: nextPosition[0], y: nextPosition[1], z: nextPosition[2]}, 2000 ).start();
 }
 
-function setMaxTime(positions, mover){
+function setMaxTime(positions){
   max = 0; 
   for(var i = 0; i< positions.length; i++){
     var sensor = positions[i];
@@ -177,7 +167,6 @@ function setMaxTime(positions, mover){
       max = sensor.length;
     }
   }
-  return mover.maxTime = max;
 }
 
 
