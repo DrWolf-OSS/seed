@@ -40,7 +40,12 @@ function init(positions){
 
   makeGround();
   markers = updateMarkers(positions, markers);
-  
+
+  for(m in markers){
+    if(markers[m]!= null && markers[m].tween != null){
+      markers[m].tween.start();
+    }
+  }  
 
   // renderer
   initRenderer();
@@ -144,7 +149,7 @@ function updateMarkers(positions, markers){
         markers[i] = createMarker();
       }
       //update, in any case   
-      setParticlePosition(markers[i], positions, nextPosition);
+      setParticlePosition(markers[i], position, nextPosition);
 
     }
   }
@@ -156,7 +161,7 @@ function setParticlePosition(marker, position, nextPosition){
   marker.particle.position.x = position[0]
   marker.particle.position.y = position[1]
   marker.particle.position.z = position[2]
-  marker.tween = new TWEEN.Tween( { x: position[0], y: position[1], z: position[2]} ).to( { x: nextPosition[0], y: nextPosition[1], z: nextPosition[2]}, 2000 ).start();
+  marker.tween = new TWEEN.Tween( { x: position[0], y: position[1], z: position[2]} ).to( { x: nextPosition[0], y: nextPosition[1], z: nextPosition[2]}, 2000 );
 }
 
 function setMaxTime(positions){
