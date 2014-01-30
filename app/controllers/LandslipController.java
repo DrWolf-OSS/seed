@@ -36,6 +36,9 @@ public class LandslipController extends Controller {
     return ok(landslip.render(Landslip.findById(id), sensorForm));
   }
   
+  public static Result viewGraph(Long id){
+    return ok(views.html.graph.render(Landslip.findById(id)));
+  }  
 
 
 }

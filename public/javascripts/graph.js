@@ -49,7 +49,7 @@ function init(positions){
 
   // renderer
   initRenderer();
-  animate(time);
+  animate();
 };
 
 function render() {
@@ -124,10 +124,11 @@ function createMarker(){
 };
 
 
-function animate(time) {
+function animate() {
   requestAnimationFrame( animate );
   render();
   controls.update();
+  TWEEN.update();
 }
 
 
@@ -158,10 +159,17 @@ function updateMarkers(positions, markers){
 
 function setParticlePosition(marker, position, nextPosition){
   // TODO: E' necessario impostare la posizione o basta quella nel tween?
-  marker.particle.position.x = position[0]
-  marker.particle.position.y = position[1]
-  marker.particle.position.z = position[2]
-  marker.tween = new TWEEN.Tween( { x: position[0], y: position[1], z: position[2]} ).to( { x: nextPosition[0], y: nextPosition[1], z: nextPosition[2]}, 2000 );
+
+  var update = function(){
+    marker.particle.position.x = position[0]
+    marker.particle.position.y = position[1]
+    marker.particle.position.z = position[2]
+  }
+  var tween = new TWEEN.Tween( { x: position[0], y: position[1], z: position[2]} )
+    .to( { x: nextPosition[0], y: nextPosition[1], z: nextPosition[2]}, 2000 )
+    .onUpdate(update);
+  tween.start();
+  marker.tween = tween;
 }
 
 function setMaxTime(positions){
