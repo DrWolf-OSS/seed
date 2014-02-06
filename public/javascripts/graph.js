@@ -2,26 +2,28 @@
   var container;
   var camera, controls, scene, renderer;
   var time, maxTime;
-  var markers;
-  var tweens, tweenPositions;
+  var markers, positions;
   var tweenSpeed;
 
-  function Marker(particle, tween, currentPosition){
+  function Marker(particle, tweens, currentPosition){
     this.particle = particle;
-    this.tween = tween;
+    this.tweens = tweens;
     this.currentPosition = currentPosition;
   }
 
-function init(positions){
+function init(p){
+  
+  tweenPositions = new Array();
+  positions = p.slice();
+  
   
   //init time
-  time=2;
+  time=0;
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
   tweenSpeed = 5000;
 
-  tweenPositions = new Array();
 
   //init markers
   markers = new Array();
@@ -140,10 +142,17 @@ function render() {
 }
 
 function updateMarkers(){
-  //remove all tweens: in execution and in array
   TWEEN.removeAll();
-  tweens = new Array();
 
+  document.getElementById('tempoId').innerHTML=time;
+
+  //If restart remove reset all markers
+  if(nextTime()<time){
+    for(i in markers){
+      scene.remove(markers[i].particle);
+    }
+    markers = new Array();
+  }
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
     // check if detection is present
@@ -172,39 +181,48 @@ function createMarker(position){
   // add it to the scene
   scene.add( object );
   
-  return new Marker(object, new TWEEN.Tween());
+  return new Marker(object, new Array(),{x: object.position.x,y: object.position.y, z: object.position.z});
 };
 
-
+function nextTime(){
+  return (time+1)%maxTime;
+}
 function setupTween(index){
 
   var position = positions[index][time];
-  var nextPosition = positions[index][(time+1)%positions.length];
-    
-  tweenPositions[index] = {x: position.x, y: position.y, z: position.z};
-  tweens.push(new TWEEN.Tween(tweenPositions[index])
-    .to({x: nextPosition[0]}, tweenSpeed)
-    .start());
-  tweens.push(new TWEEN.Tween(tweenPositions[index])
-    .to({y: nextPosition[1]}, tweenSpeed)
-    .start());
+  var nextPosition = positions[index][nextTime()];
+  
+  if(position != null && nextPosition != null){  
+    tweenPositions[index] = {x: position.x, y: position.y, z: position.z};
+    markers[index].tweens.push(new TWEEN.Tween(markers[index].currentPosition)
+      .to({x: nextPosition[0]}, tweenSpeed)
+      .start());
+    markers[index].tweens.push(new TWEEN.Tween(markers[index].currentPosition)
+      .to({y: nextPosition[1]}, tweenSpeed)
+      .start());
 
-  tweens.push(new TWEEN.Tween(tweenPositions[index])
-    .to({z: nextPosition[2]}, tweenSpeed)
-    .onUpdate(tweenUpdate)
-    .start()); 
+    markers[index].tweens.push(new TWEEN.Tween(markers[index].currentPosition)
+      .to({z: nextPosition[2]}, tweenSpeed)
+      .onUpdate(tweenUpdate)
+      .onComplete(tweenComplete)
+      .start()); 
+  }
 }
 
 function tweenUpdate(positions){
-
-  //togliere vettore tweens e mettere in particle!!
   
   for (i in markers ){
-    markers[i].particle.position.x = tweenPositions[i].x;
-    markers[i].particle.position.y = tweenPositions[i].y;
-    markers[i].particle.position.z = tweenPositions[i].z;
+    markers[i].particle.position.x = markers[i].currentPosition.x;
+    markers[i].particle.position.y = markers[i].currentPosition.y;
+    markers[i].particle.position.z = markers[i].currentPosition.z;
   }
 }
+
+function tweenComplete(){
+  time = nextTime();
+  updateMarkers();
+}
+
 
 function getMaxTime(positions){
   max = 0; 
@@ -217,19 +235,7 @@ function getMaxTime(positions){
   return max;
 }
 
-/*
-function updateTweens(){
-  for(m in markers){
-    if(markers[m]!= null && markers[m].tween != null){
-    markers[m].particle.position.x = current.x;
-    //markers[m].particle.position.y = current.y;
-    //markers[m].particle.position.z = current.z;
-      //markers[m].tween.update();
-    }
-    console.log(current.x);
-  }  
-}  
-*/
+
  
 
 
