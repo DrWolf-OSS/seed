@@ -22,7 +22,7 @@ function init(p){
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
-  tweenSpeed = 5000;
+  tweenSpeed = 1500;
 
 
   //init markers
@@ -185,7 +185,7 @@ function createMarker(position){
 };
 
 function nextTime(){
-  return (time+1)%maxTime;
+  return (time+1)%(maxTime);
 }
 function setupTween(index){
 
@@ -193,7 +193,7 @@ function setupTween(index){
   var nextPosition = positions[index][nextTime()];
   
   if(position != null && nextPosition != null){  
-    tweenPositions[index] = {x: position.x, y: position.y, z: position.z};
+    tweenPositions[index] = {x: position[0], y: position[1], z: position[2]};
     markers[index].tweens.push(new TWEEN.Tween(markers[index].currentPosition)
       .to({x: nextPosition[0]}, tweenSpeed)
       .start());
@@ -207,6 +207,7 @@ function setupTween(index){
       .onComplete(tweenComplete)
       .start()); 
   }
+    console.log("time: " + time + " pos: " + tweenPositions[index].x + ", " + tweenPositions[index].y + ", " + tweenPositions[index].z);
 }
 
 function tweenUpdate(positions){
