@@ -3,7 +3,7 @@
   var camera, controls, scene, renderer;
   var time, maxTime;
   var markers, positions;
-  var tweenSpeed;
+  var tweenSpeed, tweenPlay;
 
   function Marker(particle, tweens, currentPosition){
     this.particle = particle;
@@ -220,8 +220,10 @@ function tweenUpdate(positions){
 }
 
 function tweenComplete(){
-  time = nextTime();
-  updateMarkers();
+  if(tweenPlay){
+    time = nextTime();
+    updateMarkers();
+  }
 }
 
 
@@ -236,7 +238,22 @@ function getMaxTime(positions){
   return max;
 }
 
+function toggleTweenPlay(){
+  var element = document.getElementById("playBtn");
+  if (element.classList.contains("fa-play")){
+    alert("pigiato");
+    element.className= "btn fa fa-pause"; 
+  }
+  else{
+    element.className= "btn fa fa-play"; 
+  }
+  /*
+  if(tweenPlay){
+    tweenPlay = false;
 
+  }
+  */
+}
  
 
 
