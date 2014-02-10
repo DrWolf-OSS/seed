@@ -18,7 +18,7 @@ function init(p){
   
   
   //init time
-  time=0;
+  time=1;
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
@@ -41,17 +41,29 @@ function init(p){
   makeControls();
  
   scene.add( new THREE.AmbientLight( 0x202020 ) );
+  
+  //WALLPAPER
+  plane = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } ) );
+  plane.visible = false;
+  scene.add( plane );
 
-  var directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
 
-  directionalLight.position.x = Math.random() - 0.5;
-  directionalLight.position.y = Math.random() - 0.5;
-  directionalLight.position.z = Math.random() - 0.5;
 
-  directionalLight.position.normalize();
+  var light = new THREE.SpotLight( 0xffffff, 1.5 );
+  light.position.set( 0, 500, 2000 );
+  light.castShadow = true;
 
-  scene.add( directionalLight );
+  light.shadowCameraNear = 200;
+  light.shadowCameraFar = camera.far;
+  light.shadowCameraFov = 50;
 
+  light.shadowBias = -0.00022;
+  light.shadowDarkness = 0.5;
+
+  light.shadowMapWidth = 2048;
+  light.shadowMapHeight = 2048;
+
+  scene.add( light );
   makeGround();
   updateMarkers(positions);
 
@@ -112,9 +124,11 @@ function initRenderer(){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("webgl");
     if ( !ctx) {
+
       renderer = new THREE.CanvasRenderer();
     } else {
-      renderer = new THREE.WebGLRenderer( { antialias: false } );
+      renderer = new THREE.CanvasRenderer();
+      //renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
   }
   renderer.setSize( window.innerWidth/1.2, window.innerHeight/1.5 );
@@ -220,8 +234,8 @@ function tweenUpdate(positions){
 }
 
 function tweenComplete(){
-  time = nextTime();
-  updateMarkers();
+  //time = nextTime();
+  //updateMarkers();
 }
 
 
