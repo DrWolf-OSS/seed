@@ -18,7 +18,7 @@ function init(p){
   
   
   //init time
-  time=0;
+  time=2;
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
@@ -171,8 +171,8 @@ function updateMarkers(){
 
 function createMarker(position){
 
-  var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
-  var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
+  var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 50  } );
+  var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 15, 0 ), material );
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
   object.position.x = position[0];
   object.position.y = position[1];
