@@ -39,5 +39,14 @@ span.leftAlign {
   float: left;
 }
 
+.graphControls{
+  display: block;
+  height:2em;
+  float: left;
+  vertical-align: bottom;
+}
 
+.graphControls > *{
+  margin-left:50px;
+}
 

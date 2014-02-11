@@ -137,7 +137,7 @@ function initRenderer(){
       renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
   }
-  renderer.setSize( window.innerWidth/1.2, window.innerHeight/1.5 );
+  renderer.setSize( window.innerWidth/1.5, window.innerHeight/1.5 );
   //renderer.setClearColor( scene.fog.color, 1 );
   
   renderer.setClearColor( 0xf0f0f0 );
