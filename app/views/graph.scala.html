@@ -5,7 +5,7 @@
 
 <div class="span10 offset1">
 
- <span> Time: <span id="tempoId">s1 </span> </span>
+ <span style="display:none;"> Timeaasd: <span id="tempoId">s1 </span> </span>
 
 
 
@@ -34,7 +34,8 @@
               }
               i++;
             }
-            init(positions);
+            backGroundImg= '@routes.Assets.at("images/frana.png")';
+            init(positions, backGroundImg);
           </script>
 
 
@@ -58,7 +59,7 @@
               });
             });
           </script>
-          <span class="leftAlign">
+          <span class="leftAlign" style="positioni="absolute";  margin-top: -32px;">
             Tempo:&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" class="slider" value="4" id="sl1" >
           </span>
