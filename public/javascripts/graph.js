@@ -15,23 +15,25 @@ function init(p){
   
   tweenPositions = new Array();
   positions = p.slice();
-  
+  // init buttons
+  tweenPlay = true; 
   
   //init time
-  time=2;
+  time=0;
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
   tweenSpeed = 1500;
 
-
+  
+  
   //init markers
   markers = new Array();
 
 
   // world
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
+  //scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
 
   //CAMERA
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -41,17 +43,24 @@ function init(p){
   makeControls();
  
   scene.add( new THREE.AmbientLight( 0x202020 ) );
+  
 
-  var directionalLight = new THREE.DirectionalLight( Math.random() * 0xffffff );
 
-  directionalLight.position.x = Math.random() - 0.5;
-  directionalLight.position.y = Math.random() - 0.5;
-  directionalLight.position.z = Math.random() - 0.5;
+  var light = new THREE.SpotLight( 0xffffff, 1.5 );
+  light.position.set( 0, 500, 2000 );
+  light.castShadow = true;
 
-  directionalLight.position.normalize();
+  light.shadowCameraNear = 200;
+  light.shadowCameraFar = camera.far;
+  light.shadowCameraFov = 50;
 
-  scene.add( directionalLight );
+  light.shadowBias = -0.00022;
+  light.shadowDarkness = 0.5;
 
+  light.shadowMapWidth = 2048;
+  light.shadowMapHeight = 2048;
+
+  scene.add( light );
   makeGround();
   updateMarkers(positions);
 
@@ -88,6 +97,15 @@ function makeControls(){
 
 
 function makeGround(){
+
+  //WALLPAPER
+  var texture = THREE.ImageUtils.loadTexture(backGroundImg);
+  material = new THREE.MeshBasicMaterial({map: texture});
+  plane = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000, 8, 8 ), material );
+  plane.side = THREE.DoubleSide;
+  plane.rotation.x = plane.rotation.z = -(Math.PI / 2);
+  plane.position.y= -100;
+  scene.add( plane );
   var line_material = new THREE.LineBasicMaterial( { color: 0x303030 } ),
       geometry = new THREE.Geometry(),
       floor = -75, step = 25;
@@ -112,14 +130,20 @@ function initRenderer(){
     var canvas = document.getElementById("myCanvas");
     var ctx = canvas.getContext("webgl");
     if ( !ctx) {
+
       renderer = new THREE.CanvasRenderer();
     } else {
+      //renderer = new THREE.CanvasRenderer();
       renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
   }
   renderer.setSize( window.innerWidth/1.2, window.innerHeight/1.5 );
-  renderer.setClearColor( scene.fog.color, 1 );
-
+  //renderer.setClearColor( scene.fog.color, 1 );
+  
+  renderer.setClearColor( 0xf0f0f0 );
+  renderer.shadowMapEnabled = true;
+  renderer.shadowMapType = THREE.PCFShadowMap;
+  
   container = document.getElementById( 'container' );
   container.appendChild( renderer.domElement );
 
@@ -171,12 +195,21 @@ function updateMarkers(){
 
 function createMarker(position){
 
-  var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 50  } );
-  var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 15, 0 ), material );
+
+  //var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
+  //var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
+  
+  var geometry = new THREE.TetrahedronGeometry( 35,0 );
+  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+  object.material.ambient = object.material.color;
+  
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
   object.position.x = position[0];
   object.position.y = position[1];
   object.position.z = position[2];
+
+  object.castShadow = true;
+  object.receiveShadow = true;
 
   // add it to the scene
   scene.add( object );
@@ -224,6 +257,8 @@ function tweenComplete(){
     time = nextTime();
     updateMarkers();
   }
+  //time = nextTime();
+  //updateMarkers();
 }
 
 
