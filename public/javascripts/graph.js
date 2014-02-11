@@ -24,14 +24,15 @@ function init(p){
   //TODO: far scegliere velocità a utente
   tweenSpeed = 1500;
 
-
+  
+  
   //init markers
   markers = new Array();
 
 
   // world
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
+  //scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
 
   //CAMERA
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -42,11 +43,6 @@ function init(p){
  
   scene.add( new THREE.AmbientLight( 0x202020 ) );
   
-  //WALLPAPER
-  plane = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000, 8, 8 ), new THREE.MeshBasicMaterial( { color: 0x000000, opacity: 0.25, transparent: true, wireframe: true } ) );
-  plane.visible = false;
-  scene.add( plane );
-
 
 
   var light = new THREE.SpotLight( 0xffffff, 1.5 );
@@ -100,6 +96,17 @@ function makeControls(){
 
 
 function makeGround(){
+
+  //WALLPAPER
+  var texture = THREE.ImageUtils.loadTexture(backGroundImg);
+  material = new THREE.MeshBasicMaterial({map: texture});
+  plane = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000, 8, 8 ), material );
+  //plane.position.z = -500;
+  plane.side = THREE.DoubleSide;
+  plane.rotation.x = plane.rotation.z = -(Math.PI / 2);
+  plane.position.y= -100;
+  scene.add( plane );
+projector = new THREE.Projector();
   var line_material = new THREE.LineBasicMaterial( { color: 0x303030 } ),
       geometry = new THREE.Geometry(),
       floor = -75, step = 25;
@@ -127,13 +134,17 @@ function initRenderer(){
 
       renderer = new THREE.CanvasRenderer();
     } else {
-      renderer = new THREE.CanvasRenderer();
-      //renderer = new THREE.WebGLRenderer( { antialias: false } );
+      //renderer = new THREE.CanvasRenderer();
+      renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
   }
   renderer.setSize( window.innerWidth/1.2, window.innerHeight/1.5 );
-  renderer.setClearColor( scene.fog.color, 1 );
-
+  //renderer.setClearColor( scene.fog.color, 1 );
+  
+  renderer.setClearColor( 0xf0f0f0 );
+  renderer.shadowMapEnabled = true;
+  renderer.shadowMapType = THREE.PCFShadowMap;
+  
   container = document.getElementById( 'container' );
   container.appendChild( renderer.domElement );
 
