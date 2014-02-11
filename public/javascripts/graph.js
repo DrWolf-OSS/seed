@@ -101,12 +101,10 @@ function makeGround(){
   var texture = THREE.ImageUtils.loadTexture(backGroundImg);
   material = new THREE.MeshBasicMaterial({map: texture});
   plane = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000, 8, 8 ), material );
-  //plane.position.z = -500;
   plane.side = THREE.DoubleSide;
   plane.rotation.x = plane.rotation.z = -(Math.PI / 2);
   plane.position.y= -100;
   scene.add( plane );
-projector = new THREE.Projector();
   var line_material = new THREE.LineBasicMaterial( { color: 0x303030 } ),
       geometry = new THREE.Geometry(),
       floor = -75, step = 25;
