@@ -196,12 +196,20 @@ function updateMarkers(){
 
 function createMarker(position){
 
-  var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
-  var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
+  //var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
+  //var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
+  
+  var geometry = new THREE.TetrahedronGeometry( 35,0 );
+  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+  object.material.ambient = object.material.color;
+  
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
   object.position.x = position[0];
   object.position.y = position[1];
   object.position.z = position[2];
+
+  object.castShadow = true;
+  object.receiveShadow = true;
 
   // add it to the scene
   scene.add( object );
