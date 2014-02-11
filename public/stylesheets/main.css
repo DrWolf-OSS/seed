@@ -44,6 +44,7 @@ span.leftAlign {
   height:2em;
   float: left;
   vertical-align: bottom;
+  margin-top: 50px;
 }
 
 .graphControls > *{
