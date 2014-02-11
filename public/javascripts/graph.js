@@ -23,7 +23,7 @@ function init(p){
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
-  tweenSpeed = 1500;
+  tweenSpeed = 1000;
 
   
   
@@ -257,8 +257,6 @@ function tweenComplete(){
     time = nextTime();
     updateMarkers();
   }
-  //time = nextTime();
-  //updateMarkers();
 }
 
 
@@ -275,19 +273,15 @@ function getMaxTime(positions){
 
 function toggleTweenPlay(){
   var element = document.getElementById("playBtn");
-  if (element.classList.contains("fa-play")){
-    alert("pigiato");
+  if (tweenPlay){
     element.className= "btn fa fa-pause"; 
+    tweenPlay = false;
   }
   else{
     element.className= "btn fa fa-play"; 
+    tweenPlay = true;
+    tweenComplete();
   }
-  /*
-  if(tweenPlay){
-    tweenPlay = false;
-
-  }
-  */
 }
  
 
