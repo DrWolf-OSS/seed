@@ -294,7 +294,7 @@ function initSlider(){
 
   var value = $slider.data('slider').getValue();
 
-  $slider.data('slider').max = maxTime;
+  $slider.data('slider').max = maxTime-1;
   $slider.slider('setValue', value);
 }
 
