@@ -12,6 +12,47 @@
 
           <div id="container" > </div>
           <canvas id="myCanvas"></canvas>
+
+
+
+
+
+
+          <script>
+            if (top.location != location) {
+              top.location.href = document.location.href ;
+            }
+            $(function(){
+
+              $('#slider').slider({
+                formater: function(value) {
+                  return 'Rilevazione: '+value;
+                },
+                min: 1,
+                orientation: 'horizontal',
+                value:1
+              });
+            });
+          </script>
+          
+          <div class="graphControls"> 
+            <span class="controlComponent" >
+              Tempo:&nbsp;&nbsp;&nbsp;&nbsp;
+              <span id="sliderSpan">
+                <input type="text" class="slider"  id="slider" data-slider-max="20">
+              </span>
+            </span>
+
+
+            <span>
+              <button class="btn fa fa-pause controlComponent " id="playBtn" onClick="toggleTweenPlay()" value="play"></button>
+            </span>
+          </div> 
+
+
+
+
+
           <script src="https://rawgithub.com/mrdoob/three.js/master/build/three.js"></script>
           <script src="@routes.Assets.at("javascripts/TrackballControls.js")" type="text/javascript"></script>
           <script src="@routes.Assets.at("javascripts/graph.js")"></script>
@@ -37,43 +78,6 @@
             backGroundImg= '@routes.Assets.at("images/frana.png")';
             init(positions, backGroundImg);
           </script>
-
-
-
-
-
-          <script>
-            if (top.location != location) {
-              top.location.href = document.location.href ;
-            }
-            $(function(){
-
-              $('#sl1').slider({
-                formater: function(value) {
-                  return 'Rilevazione: '+value;
-                },
-                min: 1,
-                orientation: 'horizontal',
-                value:1
-              });
-            });
-          </script>
-          <div class="graphControls"> 
-            <span class="controlComponent" >
-              Tempo:&nbsp;&nbsp;&nbsp;&nbsp;
-              <input type="text" class="slider" value="4" id="sl1" >
-            </span>
-
-
-            <span>
-              <button class="btn fa fa-play controlComponent " id="playBtn" onClick="toggleTweenPlay()" value="play"></button>
-            </span>
-          </div> 
-
-
-
-
-
 
 
   }

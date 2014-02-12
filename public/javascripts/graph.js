@@ -25,7 +25,8 @@ function init(p){
   //TODO: far scegliere velocità a utente
   tweenSpeed = 1000;
 
-  
+  //init slider
+  initSlider();
   
   //init markers
   markers = new Array();
@@ -240,7 +241,6 @@ function setupTween(index){
       .onComplete(tweenComplete)
       .start()); 
   }
-    console.log("time: " + time + " pos: " + tweenPositions[index].x + ", " + tweenPositions[index].y + ", " + tweenPositions[index].z);
 }
 
 function tweenUpdate(positions){
@@ -257,6 +257,7 @@ function tweenComplete(){
     time = nextTime();
     updateMarkers();
   }
+  moveSlider(time);
 }
 
 
@@ -274,15 +275,31 @@ function getMaxTime(positions){
 function toggleTweenPlay(){
   var element = document.getElementById("playBtn");
   if (tweenPlay){
-    element.className= "btn fa fa-pause"; 
+    element.className= "btn fa fa-play"; 
     tweenPlay = false;
   }
   else{
-    element.className= "btn fa fa-play"; 
+    element.className= "btn fa fa-pause"; 
     tweenPlay = true;
     tweenComplete();
   }
 }
  
 
+function initSlider(){
+  $slider = $('#slider');
+  $slider.slider().on('slide', function() {
+    time = $slider.data('slider').getValue();
+  });
 
+  var value = $slider.data('slider').getValue();
+
+  $slider.data('slider').max = maxTime;
+  $slider.slider('setValue', value);
+}
+
+function moveSlider(value){
+  
+  $slider = $('#slider');
+  $slider.slider('setValue', value);
+}
