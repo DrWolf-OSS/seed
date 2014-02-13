@@ -145,7 +145,7 @@ function initRenderer(){
   renderer.setSize( window.innerWidth/1.5, window.innerHeight/1.5 );
   //renderer.setClearColor( scene.fog.color, 1 );
   
-  renderer.setClearColor( 0xf0f0f0 );
+  renderer.setClearColor( 0xE0F8F7 );
   renderer.shadowMapEnabled = true;
   renderer.shadowMapType = THREE.PCFShadowMap;
   
