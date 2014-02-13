@@ -11,6 +11,7 @@
     this.currentPosition = currentPosition;
   }
 
+/*Initialize whole graph*/
 function init(p){
   
   tweenPositions = new Array();
@@ -76,12 +77,14 @@ function init(p){
   animate();
 };
 
+/* Renders scene*/
 function render() {
 //  requestAnimationFrame(render);
   controls.update();
   renderer.render(scene, camera);
 };
 
+/* Controls setup */
 function makeControls(){
 
   controls = new THREE.TrackballControls( camera );
@@ -96,7 +99,7 @@ function makeControls(){
   controls.addEventListener( 'change', render );
 }
 
-
+/*Renders ground */
 function makeGround(){
 
   //WALLPAPER
@@ -125,6 +128,7 @@ function makeGround(){
   scene.add( line );
 }
 
+/* Initialize render parameters*/
 function initRenderer(){
   
   if (window.WebGLRenderingContext){
@@ -151,7 +155,7 @@ function initRenderer(){
 };
 
 
-
+/* Animate function */
 function animate() {
   requestAnimationFrame( animate );
   render();
@@ -161,18 +165,22 @@ function animate() {
   
 }
 
-
+/* Standard three.js function */
 function render() {
   renderer.render( scene, camera );
 }
 
+/* Update markers every time */
 function updateMarkers(){
   TWEEN.removeAll();
-
+  
+  // update time
+  time = nextTime();
+  moveSlider(time);
   document.getElementById('tempoId').innerHTML=time;
 
   //If restart remove reset all markers
-  if(nextTime()<time){
+  if(time == 0){
     for(i in markers){
       scene.remove(markers[i].particle);
     }
@@ -187,13 +195,18 @@ function updateMarkers(){
         // Particle not already drawn, create it 
         markers[i] = createMarker(positions[i][time]);
       }
+      //TODO: make not transparent
       //update, in any case   
       setupTween(i);
 
     }
+    else{
+      //TODO: make transparent
+    }
   }
 }
 
+/* Create new marker */
 function createMarker(position){
 
 
@@ -218,9 +231,24 @@ function createMarker(position){
   return new Marker(object, new Array(),{x: object.position.x,y: object.position.y, z: object.position.z});
 };
 
+/* Return next time, first if last time is passed */
 function nextTime(){
   return (time+1)%(maxTime);
 }
+
+/* Return max detection time */
+function getMaxTime(positions){
+  max = 0; 
+  for(var i = 0; i< positions.length; i++){
+    var sensor = positions[i];
+    if(sensor.length > max){
+      max = sensor.length;
+    }
+  }
+  return max;
+}
+
+/* Create movement for marker in indicated position*/
 function setupTween(index){
 
   var position = positions[index][time];
@@ -243,6 +271,7 @@ function setupTween(index){
   }
 }
 
+/* Update marker position during movement phase*/
 function tweenUpdate(positions){
   
   for (i in markers ){
@@ -252,44 +281,43 @@ function tweenUpdate(positions){
   }
 }
 
+/* When movement phase is complete, update time and markers */
 function tweenComplete(){
+  //if it is last detection
+  if(nextTime()<time){
+    //stop graph
+    toggleTweenPlay('pause');
+  }
   if(tweenPlay){
-    time = nextTime();
     updateMarkers();
   }
-  moveSlider(time);
 }
 
-
-function getMaxTime(positions){
-  max = 0; 
-  for(var i = 0; i< positions.length; i++){
-    var sensor = positions[i];
-    if(sensor.length > max){
-      max = sensor.length;
-    }
-  }
-  return max;
-}
-
-function toggleTweenPlay(){
+/* Set pause or play in movement state */
+function toggleTweenPlay(s){
   var element = document.getElementById("playBtn");
-  if (tweenPlay){
+  if (s == "play" || tweenPlay){
     element.className= "btn fa fa-play"; 
     tweenPlay = false;
   }
-  else{
+  else if(s=="pause" || !tweenPlay){
     element.className= "btn fa fa-pause"; 
     tweenPlay = true;
-    tweenComplete();
+    updateMarkers();
   }
 }
  
-
+/* Initialize slider */
 function initSlider(){
   $slider = $('#slider');
   $slider.slider().on('slide', function() {
     time = $slider.data('slider').getValue();
+  });
+  $slider.slider().on('slideStart', function(){
+    toggleTweenPlay('pause');
+  });
+  $slider.slider().on('slideStop', function(){
+    toggleTweenPlay('start');
   });
 
   var value = $slider.data('slider').getValue();
@@ -298,6 +326,7 @@ function initSlider(){
   $slider.slider('setValue', value);
 }
 
+/* Update slider when */
 function moveSlider(value){
   
   $slider = $('#slider');
