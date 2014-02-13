@@ -38,3 +38,16 @@ body .modal {
 span.leftAlign {
   float: left;
 }
+
+.graphControls{
+  display: block;
+  height:2em;
+  float: left;
+  vertical-align: bottom;
+  margin-top: 50px;
+}
+
+.graphControls > *{
+  margin-left:50px;
+}
+

@@ -3,7 +3,7 @@
   var camera, controls, scene, renderer;
   var time, maxTime;
   var markers, positions;
-  var tweenSpeed;
+  var tweenSpeed, tweenPlay;
 
   function Marker(particle, tweens, currentPosition){
     this.particle = particle;
@@ -11,20 +11,23 @@
     this.currentPosition = currentPosition;
   }
 
+/*Initialize whole graph*/
 function init(p){
   
   tweenPositions = new Array();
   positions = p.slice();
-  
+  // init buttons
+  tweenPlay = true; 
   
   //init time
-  time=1;
+  time=0;
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
-  tweenSpeed = 1500;
+  tweenSpeed = 1000;
 
-  
+  //init slider
+  initSlider();
   
   //init markers
   markers = new Array();
@@ -74,12 +77,14 @@ function init(p){
   animate();
 };
 
+/* Renders scene*/
 function render() {
 //  requestAnimationFrame(render);
   controls.update();
   renderer.render(scene, camera);
 };
 
+/* Controls setup */
 function makeControls(){
 
   controls = new THREE.TrackballControls( camera );
@@ -94,7 +99,7 @@ function makeControls(){
   controls.addEventListener( 'change', render );
 }
 
-
+/*Renders ground */
 function makeGround(){
 
   //WALLPAPER
@@ -123,6 +128,7 @@ function makeGround(){
   scene.add( line );
 }
 
+/* Initialize render parameters*/
 function initRenderer(){
   
   if (window.WebGLRenderingContext){
@@ -136,7 +142,7 @@ function initRenderer(){
       renderer = new THREE.WebGLRenderer( { antialias: false } );
     }
   }
-  renderer.setSize( window.innerWidth/1.2, window.innerHeight/1.5 );
+  renderer.setSize( window.innerWidth/1.5, window.innerHeight/1.5 );
   //renderer.setClearColor( scene.fog.color, 1 );
   
   renderer.setClearColor( 0xf0f0f0 );
@@ -149,7 +155,7 @@ function initRenderer(){
 };
 
 
-
+/* Animate function */
 function animate() {
   requestAnimationFrame( animate );
   render();
@@ -159,18 +165,22 @@ function animate() {
   
 }
 
-
+/* Standard three.js function */
 function render() {
   renderer.render( scene, camera );
 }
 
+/* Update markers every time */
 function updateMarkers(){
   TWEEN.removeAll();
-
+  
+  // update time
+  time = nextTime();
+  moveSlider(time);
   document.getElementById('tempoId').innerHTML=time;
 
   //If restart remove reset all markers
-  if(nextTime()<time){
+  if(time == 0){
     for(i in markers){
       scene.remove(markers[i].particle);
     }
@@ -185,14 +195,20 @@ function updateMarkers(){
         // Particle not already drawn, create it 
         markers[i] = createMarker(positions[i][time]);
       }
+      //TODO: make not transparent
       //update, in any case   
       setupTween(i);
 
     }
+    else{
+      //TODO: make transparent
+    }
   }
 }
 
+/* Create new marker */
 function createMarker(position){
+
 
   //var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
   //var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
@@ -215,9 +231,24 @@ function createMarker(position){
   return new Marker(object, new Array(),{x: object.position.x,y: object.position.y, z: object.position.z});
 };
 
+/* Return next time, first if last time is passed */
 function nextTime(){
   return (time+1)%(maxTime);
 }
+
+/* Return max detection time */
+function getMaxTime(positions){
+  max = 0; 
+  for(var i = 0; i< positions.length; i++){
+    var sensor = positions[i];
+    if(sensor.length > max){
+      max = sensor.length;
+    }
+  }
+  return max;
+}
+
+/* Create movement for marker in indicated position*/
 function setupTween(index){
 
   var position = positions[index][time];
@@ -238,9 +269,9 @@ function setupTween(index){
       .onComplete(tweenComplete)
       .start()); 
   }
-    console.log("time: " + time + " pos: " + tweenPositions[index].x + ", " + tweenPositions[index].y + ", " + tweenPositions[index].z);
 }
 
+/* Update marker position during movement phase*/
 function tweenUpdate(positions){
   
   for (i in markers ){
@@ -250,24 +281,54 @@ function tweenUpdate(positions){
   }
 }
 
+/* When movement phase is complete, update time and markers */
 function tweenComplete(){
-  //time = nextTime();
-  //updateMarkers();
-}
-
-
-function getMaxTime(positions){
-  max = 0; 
-  for(var i = 0; i< positions.length; i++){
-    var sensor = positions[i];
-    if(sensor.length > max){
-      max = sensor.length;
-    }
+  //if it is last detection
+  if(nextTime()<time){
+    //stop graph
+    toggleTweenPlay('pause');
   }
-  return max;
+  if(tweenPlay){
+    updateMarkers();
+  }
 }
 
-
+/* Set pause or play in movement state */
+function toggleTweenPlay(s){
+  var element = document.getElementById("playBtn");
+  if (s == "play" || tweenPlay){
+    element.className= "btn fa fa-play"; 
+    tweenPlay = false;
+  }
+  else if(s=="pause" || !tweenPlay){
+    element.className= "btn fa fa-pause"; 
+    tweenPlay = true;
+    updateMarkers();
+  }
+}
  
+/* Initialize slider */
+function initSlider(){
+  $slider = $('#slider');
+  $slider.slider().on('slide', function() {
+    time = $slider.data('slider').getValue();
+  });
+  $slider.slider().on('slideStart', function(){
+    toggleTweenPlay('pause');
+  });
+  $slider.slider().on('slideStop', function(){
+    toggleTweenPlay('start');
+  });
 
+  var value = $slider.data('slider').getValue();
 
+  $slider.data('slider').max = maxTime-1;
+  $slider.slider('setValue', value);
+}
+
+/* Update slider when */
+function moveSlider(value){
+  
+  $slider = $('#slider');
+  $slider.slider('setValue', value);
+}
