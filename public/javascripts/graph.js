@@ -77,12 +77,12 @@ function init(p){
   animate();
 };
 
-/* Renders scene*/
+
+/* Standard three.js function */
 function render() {
-//  requestAnimationFrame(render);
-  controls.update();
-  renderer.render(scene, camera);
-};
+  renderer.render( scene, camera );
+}
+
 
 /* Controls setup */
 function makeControls(){
@@ -165,10 +165,6 @@ function animate() {
   
 }
 
-/* Standard three.js function */
-function render() {
-  renderer.render( scene, camera );
-}
 
 /* Update markers every time */
 function updateMarkers(){
@@ -195,13 +191,15 @@ function updateMarkers(){
         // Particle not already drawn, create it 
         markers[i] = createMarker(positions[i][time]);
       }
-      //TODO: make not transparent
+      markers[i].particle.material.opacity=1;
       //update, in any case   
       setupTween(i);
 
     }
     else{
-      //TODO: make transparent
+      if(markers[i]!= null ){
+        markers[i].particle.material.opacity=0.2;
+      }
     }
   }
 }
@@ -214,7 +212,7 @@ function createMarker(position){
   //var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
   
   var geometry = new THREE.TetrahedronGeometry( 35,0 );
-  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
