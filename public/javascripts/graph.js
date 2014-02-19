@@ -20,7 +20,7 @@ function init(p){
   tweenPlay = true; 
   
   //init time
-  time=0;
+  time=-1;
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
@@ -191,25 +191,41 @@ function updateMarkers(){
         // Particle not already drawn, create it 
         markers[i] = createMarker(positions[i][time]);
       }
-      markers[i].particle.material.opacity=1;
+      
+      // And next position is not detected: transparent!
+      if(positions[i][nextTime()] != null ){
+        markers[i].particle.material.opacity=1;
+        //new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, 500 ).start();
+      }
+
+      else{
+        // next position detected, not transparent!
+        //new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 0.2 }, 500 ).start();
+        markers[i].particle.material.opacity=0.2;
+      }
+      
       //update, in any case   
       setupTween(i);
 
     }
-    else{
-      if(markers[i]!= null ){
-        markers[i].particle.material.opacity=0.2;
-      }
-    }
   }
+  // If no detection is present
+  if (TWEEN.getAll().length<1){
+    
+    // fake tween for timing
+    var fakeMarker, fakeTween;
+    fakeMarker = createMarker(new Array(0,0,0));
+    fakeMarker.particle.material.opacity=0;
+    fakeTween = new TWEEN.Tween(  fakeMarker.particle.material ).to( { opacity: 0 }, tweenSpeed ).onComplete(tweenComplete).start();
+    fakeTween.start();
+  }
+
 }
 
 /* Create new marker */
 function createMarker(position){
 
 
-  //var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
-  //var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
   
   var geometry = new THREE.TetrahedronGeometry( 35,0 );
   var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
