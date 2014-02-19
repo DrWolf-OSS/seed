@@ -192,21 +192,23 @@ function updateMarkers(){
         markers[i] = createMarker(positions[i][time]);
       }
       
-      // And next position is not detected: transparent!
-      if(positions[i][nextTime()] != null ){
-        markers[i].particle.material.opacity=1;
-        //new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, 500 ).start();
-      }
+      if(!isLastdetection() || true){
+        // And next position is not detected: transparent!
+        if(positions[i][nextTime()] != null ){
+          //markers[i].particle.material.opacity=1;
+          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, 500 ).start();
+          tween.start();
+        }
 
-      else{
-        // next position detected, not transparent!
-        //new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 0.2 }, 500 ).start();
-        markers[i].particle.material.opacity=0.2;
+        else{
+          // next position detected, not transparent!
+          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 0.2 }, 500 ).start();
+          tween.start();
+          markers[i].particle.material.opacity=0.2;
+        }
       }
-      
       //update, in any case   
       setupTween(i);
-
     }
   }
   // If no detection is present
@@ -221,6 +223,13 @@ function updateMarkers(){
   }
 
 }
+
+function isLastdetection(){
+  var ret;
+  time > nextTime() ? ret= true : ret=false;
+  return ret;
+}
+
 
 /* Create new marker */
 function createMarker(position){
