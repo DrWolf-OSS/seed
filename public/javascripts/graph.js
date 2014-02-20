@@ -20,7 +20,7 @@ function init(p){
   tweenPlay = true; 
   
   //init time
-  time=0;
+  time=-1;
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
@@ -77,12 +77,12 @@ function init(p){
   animate();
 };
 
-/* Renders scene*/
+
+/* Standard three.js function */
 function render() {
-//  requestAnimationFrame(render);
-  controls.update();
-  renderer.render(scene, camera);
-};
+  renderer.render( scene, camera );
+}
+
 
 /* Controls setup */
 function makeControls(){
@@ -165,20 +165,21 @@ function animate() {
   
 }
 
-/* Standard three.js function */
-function render() {
-  renderer.render( scene, camera );
-}
 
 /* Update markers every time */
 function updateMarkers(){
   TWEEN.removeAll();
-  
+  var detectionPresent = false;
+  var lastDetection = false;
+
   // update time
   time = nextTime();
   moveSlider(time);
   document.getElementById('tempoId').innerHTML=time;
 
+  // check if it is last detection
+  lastDetection = isLastdetection();
+  
   //If restart remove reset all markers
   if(time == 0){
     for(i in markers){
@@ -188,6 +189,7 @@ function updateMarkers(){
   }
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
+
     // check if detection is present
     if(positions[i][time]!=null){
 
@@ -195,26 +197,53 @@ function updateMarkers(){
         // Particle not already drawn, create it 
         markers[i] = createMarker(positions[i][time]);
       }
-      //TODO: make not transparent
+      
+      if(!lastDetection){
+        // And next position is not detected: transparent!
+        if(positions[i][nextTime()] != null ){
+          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, 500 ).start();
+          tween.start();
+          detectionPresent = true;
+        }
+
+        else{
+          // next position detected, not transparent!
+          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 0.2 }, 500 ).start();
+          tween.start();
+
+        }
+      }
       //update, in any case   
       setupTween(i);
-
-    }
-    else{
-      //TODO: make transparent
     }
   }
+  // If no detection is present
+  if (!detectionPresent && !lastDetection){
+    
+    // fake tween for timing
+    var fakeMarker, fakeTween;
+    fakeMarker = createMarker(new Array(0,0,0));
+    fakeMarker.particle.material.opacity=0;
+    fakeTween = new TWEEN.Tween(  fakeMarker.particle.material ).to( { opacity: 0 }, tweenSpeed ).onComplete(tweenComplete).start();
+    fakeTween.start();
+  }
+
 }
+
+function isLastdetection(){
+  var ret;
+  time > nextTime() ? ret= true : ret=false;
+  return ret;
+}
+
 
 /* Create new marker */
 function createMarker(position){
 
 
-  //var material = new THREE.MeshPhongMaterial( { specular: '#a9fcff', color: Math.random() * 0x808008 + 0x808080, emissive: '#FF0000', shininess: 100  } );
-  //var object = new THREE.Mesh( new THREE.TetrahedronGeometry( 35, 0 ), material );
   
   var geometry = new THREE.TetrahedronGeometry( 35,0 );
-  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
+  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
