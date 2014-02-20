@@ -169,12 +169,17 @@ function animate() {
 /* Update markers every time */
 function updateMarkers(){
   TWEEN.removeAll();
-  
+  var detectionPresent = false;
+  var lastDetection = false;
+
   // update time
   time = nextTime();
   moveSlider(time);
   document.getElementById('tempoId').innerHTML=time;
 
+  // check if it is last detection
+  lastDetection = isLastdetection();
+  
   //If restart remove reset all markers
   if(time == 0){
     for(i in markers){
@@ -184,6 +189,7 @@ function updateMarkers(){
   }
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
+
     // check if detection is present
     if(positions[i][time]!=null){
 
@@ -192,19 +198,19 @@ function updateMarkers(){
         markers[i] = createMarker(positions[i][time]);
       }
       
-      if(!isLastdetection() || true){
+      if(!lastDetection){
         // And next position is not detected: transparent!
         if(positions[i][nextTime()] != null ){
-          //markers[i].particle.material.opacity=1;
           var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, 500 ).start();
           tween.start();
+          detectionPresent = true;
         }
 
         else{
           // next position detected, not transparent!
           var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 0.2 }, 500 ).start();
           tween.start();
-          markers[i].particle.material.opacity=0.2;
+
         }
       }
       //update, in any case   
@@ -212,7 +218,7 @@ function updateMarkers(){
     }
   }
   // If no detection is present
-  if (TWEEN.getAll().length<1){
+  if (!detectionPresent && !lastDetection){
     
     // fake tween for timing
     var fakeMarker, fakeTween;
