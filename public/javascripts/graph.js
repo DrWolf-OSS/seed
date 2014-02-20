@@ -165,6 +165,31 @@ function animate() {
   
 }
 
+function slideTo(t){
+  time = t;
+  moveSlider(time);
+  //If restart remove reset all markers
+  for(i in markers){
+    scene.remove(markers[i].particle);
+  }
+  markers = new Array();
+  for(var i = 0; i<positions.length; i++){
+    var position = positions[i][time];
+    if(position != null){
+      if(markers[i]== null ){
+        // Particle not already drawn, create it 
+        markers[i] = createMarker(position);
+      }
+      else{
+        // Update position fore every maker
+        markers[i].particle.position.x = position.x;
+        markers[i].particle.position.y = position.y;
+        markers[i].particle.position.z = position.z;
+      }
+    }
+  }
+  render();
+}
 
 /* Update markers every time */
 function updateMarkers(){
@@ -198,7 +223,7 @@ function updateMarkers(){
         markers[i] = createMarker(positions[i][time]);
       }
       
-      if(!lastDetection){
+      if(!lastDetection ){
         // And next position is not detected: transparent!
         if(positions[i][nextTime()] != null ){
           var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, 500 ).start();
@@ -301,7 +326,7 @@ function setupTween(index){
 }
 
 /* Update marker position during movement phase*/
-function tweenUpdate(positions){
+function tweenUpdate(){
   
   for (i in markers ){
     markers[i].particle.position.x = markers[i].currentPosition.x;
@@ -325,11 +350,11 @@ function tweenComplete(){
 /* Set pause or play in movement state */
 function toggleTweenPlay(s){
   var element = document.getElementById("playBtn");
-  if (s == "play" || tweenPlay){
+  if (s == "pause" || tweenPlay){
     element.className= "btn fa fa-play"; 
     tweenPlay = false;
   }
-  else if(s=="pause" || !tweenPlay){
+  else if(s=="play" || !tweenPlay){
     element.className= "btn fa fa-pause"; 
     tweenPlay = true;
     updateMarkers();
@@ -340,13 +365,10 @@ function toggleTweenPlay(s){
 function initSlider(){
   $slider = $('#slider');
   $slider.slider().on('slide', function() {
-    time = $slider.data('slider').getValue();
+    slideTo($slider.data('slider').getValue());
   });
   $slider.slider().on('slideStart', function(){
     toggleTweenPlay('pause');
-  });
-  $slider.slider().on('slideStop', function(){
-    toggleTweenPlay('start');
   });
 
   var value = $slider.data('slider').getValue();
