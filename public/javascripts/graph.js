@@ -166,29 +166,31 @@ function animate() {
 }
 
 function slideTo(t){
-  time = t;
-  moveSlider(time);
-  //If restart remove reset all markers
-  for(i in markers){
-    scene.remove(markers[i].particle);
-  }
-  markers = new Array();
-  for(var i = 0; i<positions.length; i++){
-    var position = positions[i][time];
-    if(position != null){
-      if(markers[i]== null ){
-        // Particle not already drawn, create it 
-        markers[i] = createMarker(position);
-      }
-      else{
-        // Update position fore every maker
-        markers[i].particle.position.x = position.x;
-        markers[i].particle.position.y = position.y;
-        markers[i].particle.position.z = position.z;
+  if(time!= t){
+    time = t;
+    moveSlider(time);
+    //If restart remove reset all markers
+    for(i in markers){
+      scene.remove(markers[i].particle);
+    }
+    markers = new Array();
+    for(var i = 0; i<positions.length; i++){
+      var position = positions[i][time];
+      if(position != null){
+        if(markers[i]== null ){
+          // Particle not already drawn, create it 
+          markers[i] = createMarker(position);
+        }
+        else{
+          // Update position fore every maker
+          markers[i].particle.position.x = position.x;
+          markers[i].particle.position.y = position.y;
+          markers[i].particle.position.z = position.z;
+        }
       }
     }
+    render();
   }
-  render();
 }
 
 /* Update markers every time */
@@ -268,7 +270,7 @@ function createMarker(position){
 
   
   var geometry = new THREE.TetrahedronGeometry( 35,0 );
-  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
+  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 1, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
