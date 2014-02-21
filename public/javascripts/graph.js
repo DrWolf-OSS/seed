@@ -4,6 +4,7 @@
   var time, maxTime;
   var markers, positions;
   var tweenSpeed, tweenPlay;
+  var transparencySpeed;
 
   function Marker(particle, tweens, currentPosition){
     this.particle = particle;
@@ -25,6 +26,7 @@ function init(p){
 
   //TODO: far scegliere velocità a utente
   tweenSpeed = 1000;
+  transparencySpeed = 500;
 
   //init slider
   initSlider();
@@ -228,19 +230,19 @@ function updateMarkers(){
       if(!lastDetection ){
         // And next position is not detected: transparent!
         if(positions[i][nextTime()] != null ){
-          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, 500 ).start();
+          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 1 }, transparencySpeed/2 ).start();
           tween.start();
           detectionPresent = true;
         }
 
         else{
           // next position detected, not transparent!
-          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 0.2 }, 500 ).start();
+          var tween = new TWEEN.Tween(  markers[i].particle.material ).to( { opacity: 0.2 }, transparencySpeed ).start();
           tween.start();
 
         }
-      //update, in any case   
-      setupTween(i);
+          //update, in any case   
+          setupTween(i);
       }
     }
   }
@@ -270,7 +272,7 @@ function createMarker(position){
 
   
   var geometry = new THREE.TetrahedronGeometry( 35,0 );
-  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 1, color: Math.random() * 0xffffff } ) );
+  var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
