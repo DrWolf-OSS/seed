@@ -30,7 +30,7 @@ public class PositionController extends Controller {
   }
 
   public static Result delete(Long id, Long sensorId){
-    Sensor.delete(id);
+    Position.delete(id);
     return redirect(routes.SensorController.view(sensorId));
   }
 
