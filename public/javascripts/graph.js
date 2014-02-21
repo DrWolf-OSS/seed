@@ -239,9 +239,9 @@ function updateMarkers(){
           tween.start();
 
         }
-      }
       //update, in any case   
       setupTween(i);
+      }
     }
   }
   // If no detection is present
