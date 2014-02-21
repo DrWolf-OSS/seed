@@ -257,6 +257,10 @@ function updateMarkers(){
     fakeTween.start();
   }
 
+  if(lastDetection){
+    //stop graph
+    toggleTweenPlay('pause');
+  }
 }
 
 function isLastdetection(){
@@ -341,11 +345,6 @@ function tweenUpdate(){
 
 /* When movement phase is complete, update time and markers */
 function tweenComplete(){
-  //if it is last detection
-  if(nextTime()<time){
-    //stop graph
-    toggleTweenPlay('pause');
-  }
   if(tweenPlay){
     updateMarkers();
   }
