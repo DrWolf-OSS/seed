@@ -95,6 +95,7 @@ function render() {
 function makeControls(){
 
   controls = new THREE.TrackballControls( camera, renderer.domElement);
+  document.addEventListener('mousedown', onDocumentMouseDown, false);
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 0.8;
@@ -394,7 +395,7 @@ function moveSlider(value){
 
 
 function onDocumentMouseDown( event ) {
-
+  alert('mouse down!');
   event.preventDefault();
 
   var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
