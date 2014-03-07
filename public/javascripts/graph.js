@@ -5,6 +5,9 @@
   var markers, positions;
   var tweenSpeed, tweenPlay;
   var transparencySpeed;
+  var tube;
+
+
 
   var mouse = new THREE.Vector2(),
   offset = new THREE.Vector3(),
@@ -40,9 +43,20 @@ function init(p){
   markers = new Array();
 
 
+  
+  
+  
+  
   // world
   scene = new THREE.Scene();
   //scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
+  
+  // PROJECTOR
+  projector = new THREE.Projector();
+  
+  
+  
+
 
   //CAMERA
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
@@ -77,6 +91,11 @@ function init(p){
     }
   }  
 
+
+
+  
+              
+
   // renderer
   initRenderer();
   //CONTROLS
@@ -95,7 +114,7 @@ function render() {
 function makeControls(){
 
   controls = new THREE.TrackballControls( camera, renderer.domElement);
-  document.addEventListener('mousedown', onDocumentMouseDown, false);
+  document.addEventListener('click', onClick, false);
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 0.8;
@@ -278,12 +297,11 @@ function isLastdetection(){
 
 /* Create new marker */
 function createMarker(position){
-
-
   
   var geometry = new THREE.TetrahedronGeometry( 35,0 );
   var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
+  object.material.side = THREE.DoubleSided;
   
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
   object.position.x = position[0];
@@ -394,24 +412,47 @@ function moveSlider(value){
 }
 
 
-function onDocumentMouseDown( event ) {
-  alert('mouse down!');
+
+
+
+function onClick( e ) {
   event.preventDefault();
+  var objects = new Array();
+  for (var i = markers.length - 1; i >= 0; i--) {
+    if (markers[i] != null)
+      objects.push(markers[i].particle);
+  };
+  mouseVector = new THREE.Vector3();
+  var container =   document.getElementById("container").getElementsByTagName("canvas")[0];
+  containerWidth = container.clientWidth;
+  containerHeight = container.clientHeight;
 
-  var vector = new THREE.Vector3( mouse.x, mouse.y, 0.5 );
-  projector.unprojectVector( vector, camera );
+  mouseVector.x = 2 * ((e.clientX - renderer.domElement.offsetLeft)/ containerWidth) - 1;
+  mouseVector.y = 1 - 2 * ((e.clientY - renderer.domElement.offsetTop)/ containerHeight );
 
-  var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
-
-  var intersects = raycaster.intersectObjects( objects );
-
-  if ( intersects.length > 0 ) {
-
-    controls.enabled = false;
-
-    SELECTED = intersects[ 0 ].object;
+  var raycaster = projector.pickingRay( mouseVector.clone(), camera ),
+  intersects = raycaster.intersectObjects( objects );
 
 
+  for( var i = 0; i < intersects.length; i++ ) {
+    intersects[ 0 ].object.material.transparent = true;
+    intersects[ 0 ].object.material.color = "black";
   }
 
+
+ 
+
+
 }
+
+
+ function getMarkersObjects(){
+ 
+/*   var array = new THREE.Object3D() ;*/
+   var array = [];
+   for (i in markers)
+   {
+     array[i]=markers[i].particle;   
+   }
+   return array;
+ }
