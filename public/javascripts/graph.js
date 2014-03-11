@@ -5,7 +5,7 @@
   var markers, positions;
   var tweenSpeed, tweenPlay;
   var transparencySpeed;
-  var tube;
+  var tube, geometry;
 
 
 
@@ -38,6 +38,7 @@ function init(p){
 
   //init slider
   initSlider();
+  geometry = new THREE.TetrahedronGeometry( 35,0 );
   
   //init markers
   markers = new Array();
@@ -298,7 +299,6 @@ function isLastdetection(){
 /* Create new marker */
 function createMarker(position){
   
-  var geometry = new THREE.TetrahedronGeometry( 35,0 );
   var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   object.material.side = THREE.DoubleSided;
@@ -435,8 +435,31 @@ function onClick( e ) {
 
 
   for( var i = 0; i < intersects.length; i++ ) {
-    intersects[ 0 ].object.material.transparent = true;
-    intersects[ 0 ].object.material.color = "black";
+  
+  // SUPER SIMPLE GLOW EFFECT
+  // use sprite because it appears the same from all angles
+  var spriteMaterial = new THREE.SpriteMaterial( 
+        { 
+            map: new THREE.ImageUtils.loadTexture( glowImg ), 
+            useScreenCoordinates: false, 
+            color: 0xff0000, transparent: false, blending: THREE.AdditiveBlending
+          });
+  var sprite = new THREE.Sprite( spriteMaterial );
+  sprite.position = intersects[i].object.position;
+  sprite.position.set(intersects[0].object.position.x,intersects[0].object.position.y,intersects[0].object.position.z);
+  sprite.scale.set(100, 100, 1.0);
+  
+  scene.add(sprite);
+
+
+  intersects[0].object.add(sprite); // this centers the glow at the mesh
+
+  //  var outlineMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
+  //  var outlineMesh = new THREE.Mesh( geometry, outlineMaterial );
+  //  outlineMesh.position = intersects[i].object.position;
+  //  outlineMesh.scale.multiplyScalar(1.05);
+  //  scene.add( outlineMesh2 );
+  
   }
 
 
