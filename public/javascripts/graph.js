@@ -435,7 +435,7 @@ function onClick( e ) {
 
 
   for( var i = 0; i < intersects.length; i++ ) {
-  
+ /* 
   // SUPER SIMPLE GLOW EFFECT
   // use sprite because it appears the same from all angles
   var spriteMaterial = new THREE.SpriteMaterial( 
@@ -453,12 +453,26 @@ function onClick( e ) {
 
 
   intersects[0].object.add(sprite); // this centers the glow at the mesh
+  */
 
-  //  var outlineMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00, side: THREE.BackSide } );
-  //  var outlineMesh = new THREE.Mesh( geometry, outlineMaterial );
-  //  outlineMesh.position = intersects[i].object.position;
-  //  outlineMesh.scale.multiplyScalar(1.05);
-  //  scene.add( outlineMesh2 );
+    var marker = intersects[i].object;
+    var haloMaterial = new THREE.ShaderMaterial( 
+        {
+          uniforms: {  },
+        vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+        fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+        map: new THREE.ImageUtils.loadTexture( glowImg ), 
+        side: THREE.BackSide,
+        blending: THREE.AdditiveBlending,
+        transparent: true
+        }   );
+
+    var haloGeometry = new THREE.SphereGeometry( 120, 32, 16 );
+    var halo = new THREE.Mesh( geometry, haloMaterial );
+    halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
+    halo.position.set(marker.position.x, marker.position.y, marker.position.z);
+    halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
+    scene.add( halo );
   
   }
 
