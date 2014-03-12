@@ -367,6 +367,8 @@ function tweenUpdate(){
     markers[i].particle.position.y = markers[i].currentPosition.y;
     markers[i].particle.position.z = markers[i].currentPosition.z;
   }
+  if(halo)  halo.position.set(selectedMarker.position.x, selectedMarker.position.y, selectedMarker.position.z);
+  
 }
 
 /* When movement phase is complete, update time and markers */
@@ -448,9 +450,13 @@ function onClick( e ) {
 
 // select and highlight a marker
 function selectMarker(m){
-
+  
+  //remove precedent halo
   if (halo) scene.remove(halo);
-  var marker = m;
+  
+  // save selected marker information in global scope
+  selectedMarker = m;
+
   var haloMaterial = new THREE.ShaderMaterial( 
       {
         uniforms: {  },
@@ -465,7 +471,7 @@ function selectMarker(m){
   var haloGeometry = new THREE.SphereGeometry( 120, 32, 16 );
   halo = new THREE.Mesh( geometry, haloMaterial );
   halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
-  halo.position.set(marker.position.x, marker.position.y, marker.position.z);
+  halo.position.set(selectedMarker.position.x, selectedMarker.position.y, selectedMarker.position.z);
   halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
   scene.add( halo );
 
