@@ -418,7 +418,7 @@ function moveSlider(value){
 
 
 
-
+// called on mouse click
 function onClick( e ) {
   event.preventDefault();
   var objects = new Array();
@@ -430,21 +430,18 @@ function onClick( e ) {
   var container =   document.getElementById("container").getElementsByTagName("canvas")[0];
   containerWidth = container.clientWidth;
   containerHeight = container.clientHeight;
-
+  // get mouse position within scene
   mouseVector.x = 2 * ((e.clientX - renderer.domElement.offsetLeft)/ containerWidth) - 1;
   mouseVector.y = 1 - 2 * ((e.clientY - renderer.domElement.offsetTop)/ containerHeight );
-
+  
+  // cast ray orthogonal to the camera
   var raycaster = projector.pickingRay( mouseVector.clone(), camera ),
+  
+  // and see wich marker intersects
   intersects = raycaster.intersectObjects( objects );
 
 
-  for( var i = 0; i < intersects.length; i++ ) {
-    selectMarker(intersects[i].object);
-  }
-
-
- 
-
+  if(intersects.length>0 )  selectMarker(intersects[0].object);
 
 }
 
