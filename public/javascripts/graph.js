@@ -5,7 +5,7 @@
   var markers, positions;
   var tweenSpeed, tweenPlay;
   var transparencySpeed;
-  var tube, geometry, halo;
+  var tube, geometry, halo, selectedMarker;
 
 
 
@@ -437,26 +437,7 @@ function onClick( e ) {
 
 
   for( var i = 0; i < intersects.length; i++ ) {
-    if (halo) scene.remove(halo);
-    var marker = intersects[i].object;
-    var haloMaterial = new THREE.ShaderMaterial( 
-        {
-          uniforms: {  },
-        vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
-        fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
-        map: new THREE.ImageUtils.loadTexture( glowImg ), 
-        side: THREE.BackSide,
-        blending: THREE.AdditiveBlending,
-        transparent: true
-        }   );
-
-    var haloGeometry = new THREE.SphereGeometry( 120, 32, 16 );
-    halo = new THREE.Mesh( geometry, haloMaterial );
-    halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
-    halo.position.set(marker.position.x, marker.position.y, marker.position.z);
-    halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
-    scene.add( halo );
-  
+    selectMarker(intersects[i].object);
   }
 
 
@@ -465,6 +446,30 @@ function onClick( e ) {
 
 }
 
+// select and highlight a marker
+function selectMarker(m){
+
+  if (halo) scene.remove(halo);
+  var marker = m;
+  var haloMaterial = new THREE.ShaderMaterial( 
+      {
+        uniforms: {  },
+      vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+      fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+      map: new THREE.ImageUtils.loadTexture( glowImg ), 
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+      }   );
+
+  var haloGeometry = new THREE.SphereGeometry( 120, 32, 16 );
+  halo = new THREE.Mesh( geometry, haloMaterial );
+  halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
+  halo.position.set(marker.position.x, marker.position.y, marker.position.z);
+  halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
+  scene.add( halo );
+
+}
 
  function getMarkersObjects(){
  
