@@ -5,7 +5,7 @@
   var markers, positions;
   var tweenSpeed, tweenPlay;
   var transparencySpeed;
-  var tube, geometry;
+  var tube, geometry, halo;
 
 
 
@@ -435,26 +435,7 @@ function onClick( e ) {
 
 
   for( var i = 0; i < intersects.length; i++ ) {
- /* 
-  // SUPER SIMPLE GLOW EFFECT
-  // use sprite because it appears the same from all angles
-  var spriteMaterial = new THREE.SpriteMaterial( 
-        { 
-            map: new THREE.ImageUtils.loadTexture( glowImg ), 
-            useScreenCoordinates: false, 
-            color: 0xff0000, transparent: false, blending: THREE.AdditiveBlending
-          });
-  var sprite = new THREE.Sprite( spriteMaterial );
-  sprite.position = intersects[i].object.position;
-  sprite.position.set(intersects[0].object.position.x,intersects[0].object.position.y,intersects[0].object.position.z);
-  sprite.scale.set(100, 100, 1.0);
-  
-  scene.add(sprite);
-
-
-  intersects[0].object.add(sprite); // this centers the glow at the mesh
-  */
-
+    if (halo) scene.remove(halo);
     var marker = intersects[i].object;
     var haloMaterial = new THREE.ShaderMaterial( 
         {
@@ -468,7 +449,7 @@ function onClick( e ) {
         }   );
 
     var haloGeometry = new THREE.SphereGeometry( 120, 32, 16 );
-    var halo = new THREE.Mesh( geometry, haloMaterial );
+    halo = new THREE.Mesh( geometry, haloMaterial );
     halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
     halo.position.set(marker.position.x, marker.position.y, marker.position.z);
     halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
