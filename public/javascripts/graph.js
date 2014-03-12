@@ -241,6 +241,8 @@ function updateMarkers(){
       scene.remove(markers[i].particle);
     }
     markers = new Array();
+    // and remove halo
+    if (halo) scene.remove(halo);
   }
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
