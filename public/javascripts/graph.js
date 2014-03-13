@@ -202,6 +202,10 @@ function slideTo(t){
       scene.remove(markers[i].particle);
     }
     markers = new Array();
+    
+    // and reset selection
+    removeSelection();
+    
     for(var i = 0; i<positions.length; i++){
       var position = positions[i][time];
       if(position != null){
@@ -242,7 +246,7 @@ function updateMarkers(){
     }
     markers = new Array();
     // and remove halo
-    if (halo) scene.remove(halo);
+    removeSelection();
   }
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
@@ -449,7 +453,7 @@ function onClick( e ) {
 function selectMarker(m){
   
   //remove precedent halo
-  if (halo) scene.remove(halo);
+  removeSelection();
   
   // save selected marker information in global scope
   selectedMarker = m;
@@ -484,3 +488,9 @@ function selectMarker(m){
    }
    return array;
  }
+
+function removeSelection(){
+  scene.remove(halo);
+  if (halo) halo=null;
+  if (selectedMarker) selectedMarker = null;
+}
