@@ -5,6 +5,14 @@
   var markers, positions;
   var tweenSpeed, tweenPlay;
   var transparencySpeed;
+  var tube, geometry, halo, selectedMarker;
+
+
+
+  var mouse = new THREE.Vector2(),
+  offset = new THREE.Vector3(),
+  INTERSECTED, SELECTED;
+
 
   function Marker(particle, tweens, currentPosition){
     this.particle = particle;
@@ -30,21 +38,31 @@ function init(p){
 
   //init slider
   initSlider();
+  geometry = new THREE.TetrahedronGeometry( 35,0 );
   
   //init markers
   markers = new Array();
 
 
+  
+  
+  
+  
   // world
   scene = new THREE.Scene();
   //scene.fog = new THREE.FogExp2( 0xEFFBFB, 0.002 );
+  
+  // PROJECTOR
+  projector = new THREE.Projector();
+  
+  
+  
+
 
   //CAMERA
   camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 1000 );
   camera.position.z = 500;
 
-  //CONTROLS
-  makeControls();
  
   scene.add( new THREE.AmbientLight( 0x202020 ) );
   
@@ -74,8 +92,15 @@ function init(p){
     }
   }  
 
+
+
+  
+              
+
   // renderer
   initRenderer();
+  //CONTROLS
+  makeControls();
   animate();
 };
 
@@ -89,7 +114,8 @@ function render() {
 /* Controls setup */
 function makeControls(){
 
-  controls = new THREE.TrackballControls( camera );
+  controls = new THREE.TrackballControls( camera, renderer.domElement);
+  document.addEventListener('click', onClick, false);
   controls.rotateSpeed = 1.0;
   controls.zoomSpeed = 1.2;
   controls.panSpeed = 0.8;
@@ -97,8 +123,8 @@ function makeControls(){
   controls.noPan = false;
   controls.staticMoving = true;
   controls.dynamicDampingFactor = 0.3;
-  controls.keys = [ 65, 83, 68 ];
-  controls.addEventListener( 'change', render );
+  //controls.keys = [ 65, 83, 68 ];
+  //controls.addEventListener( 'change', render );
 }
 
 /*Renders ground */
@@ -176,6 +202,10 @@ function slideTo(t){
       scene.remove(markers[i].particle);
     }
     markers = new Array();
+    
+    // and reset selection
+    removeSelection();
+    
     for(var i = 0; i<positions.length; i++){
       var position = positions[i][time];
       if(position != null){
@@ -215,6 +245,8 @@ function updateMarkers(){
       scene.remove(markers[i].particle);
     }
     markers = new Array();
+    // and remove halo
+    removeSelection();
   }
   // Search right time position for every sensor
   for(var i = 0; i<positions.length; i++){
@@ -272,12 +304,10 @@ function isLastdetection(){
 
 /* Create new marker */
 function createMarker(position){
-
-
   
-  var geometry = new THREE.TetrahedronGeometry( 35,0 );
   var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
+  object.material.side = THREE.DoubleSided;
   
   object.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
   object.position.x = position[0];
@@ -341,6 +371,8 @@ function tweenUpdate(){
     markers[i].particle.position.y = markers[i].currentPosition.y;
     markers[i].particle.position.z = markers[i].currentPosition.z;
   }
+  if(halo)  halo.position.set(selectedMarker.position.x, selectedMarker.position.y, selectedMarker.position.z);
+  
 }
 
 /* When movement phase is complete, update time and markers */
@@ -385,4 +417,80 @@ function moveSlider(value){
   
   $slider = $('#slider');
   $slider.slider('setValue', value);
+}
+
+
+
+
+// called on mouse click
+function onClick( e ) {
+  event.preventDefault();
+  var objects = new Array();
+  for (var i = markers.length - 1; i >= 0; i--) {
+    if (markers[i] != null)
+      objects.push(markers[i].particle);
+  };
+  mouseVector = new THREE.Vector3();
+  var container =   document.getElementById("container").getElementsByTagName("canvas")[0];
+  containerWidth = container.clientWidth;
+  containerHeight = container.clientHeight;
+  // get mouse position within scene
+  mouseVector.x = 2 * ((e.clientX - renderer.domElement.offsetLeft)/ containerWidth) - 1;
+  mouseVector.y = 1 - 2 * ((e.clientY - renderer.domElement.offsetTop)/ containerHeight );
+  
+  // cast ray orthogonal to the camera
+  var raycaster = projector.pickingRay( mouseVector.clone(), camera ),
+  
+  // and see wich marker intersects
+  intersects = raycaster.intersectObjects( objects );
+
+
+  if(intersects.length>0 )  selectMarker(intersects[0].object);
+
+}
+
+// select and highlight a marker
+function selectMarker(m){
+  
+  //remove precedent halo
+  removeSelection();
+  
+  // save selected marker information in global scope
+  selectedMarker = m;
+
+  var haloMaterial = new THREE.ShaderMaterial( 
+      {
+        uniforms: {  },
+      vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+      fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+      map: new THREE.ImageUtils.loadTexture( glowImg ), 
+      side: THREE.BackSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true
+      }   );
+
+  var haloGeometry = new THREE.SphereGeometry( 120, 32, 16 );
+  halo = new THREE.Mesh( geometry, haloMaterial );
+  halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
+  halo.position.set(selectedMarker.position.x, selectedMarker.position.y, selectedMarker.position.z);
+  halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
+  scene.add( halo );
+
+}
+
+ function getMarkersObjects(){
+ 
+/*   var array = new THREE.Object3D() ;*/
+   var array = [];
+   for (i in markers)
+   {
+     array[i]=markers[i].particle;   
+   }
+   return array;
+ }
+
+function removeSelection(){
+  scene.remove(halo);
+  if (halo) halo=null;
+  if (selectedMarker) selectedMarker = null;
 }
