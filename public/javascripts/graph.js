@@ -6,7 +6,7 @@
   var tweenSpeed, tweenPlay;
   var transparencySpeed;
   var tube, geometry, halo, selectedMarker;
-
+  var ids;
 
 
   var mouse = new THREE.Vector2(),
@@ -21,10 +21,12 @@
   }
 
 /*Initialize whole graph*/
-function init(p){
+function init(p, pIds){
   
   tweenPositions = new Array();
   positions = p.slice();
+  ids = pIds.slice();
+  
   // init buttons
   tweenPlay = true; 
   
@@ -476,7 +478,13 @@ function selectMarker(m){
   halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
   scene.add( halo );
 
+  // display info about select marker
+  displayMarkerInfo(selectedMarker.uuid);
 }
+ function displayMarkerInfo(uuid){
+   var pos = getPositionOfMarker(uuid)
+   console.log('trovato id  ' + ids[pos]);
+ }
 
  function getMarkersObjects(){
  
@@ -493,4 +501,13 @@ function removeSelection(){
   scene.remove(halo);
   if (halo) halo=null;
   if (selectedMarker) selectedMarker = null;
+}
+
+
+function getPositionOfMarker(uuid){
+  for(c in markers){
+    if (markers[c].particle.uuid == uuid )  {
+      return c;
+    }
+  }
 }

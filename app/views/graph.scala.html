@@ -77,12 +77,13 @@
 
           <script>
 
-            var positions = new Array();
+            var positions = [];
+            var ids = [];
             var i = 0;
             var time = 0;
 
             @for(sensor<- landslip.sensors){
-              positions[i] = new Array();
+              positions[i] = [];
               @for(position<- sensor.positions){
                 time = @position.t;
                 positions[i][time] = new Array(3);
@@ -90,11 +91,13 @@
                 positions[i][time][1] = @position.y;
                 positions[i][time][2] = @position.z;
               }
+              ids[i]= @sensor.id
               i++;
+
             }
             backGroundImg= '@routes.Assets.at("images/frana.png")';
             glowImg= '@routes.Assets.at("images/glow.png")';
-            init(positions);
+            init(positions, ids);
           </script>
 
 
