@@ -483,6 +483,7 @@ function selectMarker(m){
 }
  function displayMarkerInfo(uuid){
    var pos = getPositionOfMarker(uuid)
+   $("#sensorLabel").html("sensore: " +ids[pos]);
    console.log('trovato id  ' + ids[pos]);
  }
 
