@@ -49,7 +49,9 @@ public class SensorController extends Controller {
 
 
   public static Result getSensorInformation(Long id) throws Exception {
-    Logger.info("Chiamata ajax ricevuta!");
-    return Results.ok(Json.toJson("Sensor ok"));
+
+    Sensor sensor = Sensor.findById(id);
+
+    return Results.ok(Json.toJson(sensor.name));
   }
 }
