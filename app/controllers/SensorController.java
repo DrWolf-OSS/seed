@@ -5,7 +5,9 @@ import play.mvc.*;
 import play.data.Form;
 import views.html.*;
 import models.*;
-import play.libs.Json;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 
 public class SensorController extends Controller {
 
@@ -51,7 +53,7 @@ public class SensorController extends Controller {
   public static Result getSensorInformation(Long id) throws Exception {
 
     Sensor sensor = Sensor.findById(id);
-
-    return Results.ok(Json.toJson(sensor.name));
+    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    return Results.ok(gson.toJson(sensor));
   }
 }

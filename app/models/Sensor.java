@@ -4,17 +4,19 @@ import java.util.*;
 
 import play.db.ebean.*;
 import play.data.validation.Constraints.*;
-
+import com.google.gson.annotations.Expose;
 import javax.persistence.*;
 
 @Entity
 public class Sensor extends Model{
 
   @Id
+  @Expose
   public Long id;
 
   @Column(unique=true)
   @Required
+  @Expose
   public String name;
 
   @OneToMany(mappedBy = "sensor", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
