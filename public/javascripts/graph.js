@@ -482,9 +482,12 @@ function selectMarker(m){
   displayMarkerInfo(selectedMarker.uuid);
 }
  function displayMarkerInfo(uuid){
-   var pos = getPositionOfMarker(uuid)
-   $("#sensorLabel").html("sensore: " +ids[pos]);
-   console.log('trovato id  ' + ids[pos]);
+      sensorjs.controllers.SensorController.getSensorInformation(ids[getPositionOfMarker(uuid)]).ajax({
+        success: function(data) {
+          obj = JSON.parse(data);
+          $("#sensorLabel").html('id: '+ obj.id + ';<br />name: ' + obj.name + ';' );
+        }
+      });
  }
 
  function getMarkersObjects(){
@@ -511,4 +514,6 @@ function getPositionOfMarker(uuid){
       return c;
     }
   }
+
+
 }

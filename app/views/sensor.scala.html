@@ -50,19 +50,9 @@
     </button>
     <script type="text/javascript" src="@routes.SensorController.javascriptRoutes"></script>
 
-    <script type="text/javascript">   
-      $('#sensorAjax').click(function(e) {
-          sensorjs.controllers.SensorController.getSensorInformation(@sensor.id).ajax({
-      success: function(data) {
-      obj = JSON.parse(data);
-      alert('id: '+ obj.id + '; name: ' + obj.name);
-      }
-      });
-    });
-    </script>
 
 
-  }
+    }
 
 
 
