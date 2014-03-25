@@ -60,7 +60,22 @@ span.leftAlign {
   z-index: 1;
   left: 50px; 
   top: 20px; 
-  width:200px; 
+  width:300px; 
   height:50px; 
   padding: 10px;
+  display: none;
+  border: solid 1px black;
+}
+
+
+#sensorKey {
+  width: 50px;
+  text-align: right;
+  float: left;
+  display: inline;
+}
+
+#sensorValue {
+  float: left;
+  display: inline;
 }

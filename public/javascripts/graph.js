@@ -485,7 +485,14 @@ function selectMarker(m){
       sensorjs.controllers.SensorController.getSensorInformation(ids[getPositionOfMarker(uuid)]).ajax({
         success: function(data) {
           obj = JSON.parse(data);
-          $("#sensorLabel").html('id: '+ obj.id + ';<br />name: ' + obj.name + ';' );
+          $("#sensorLabel").show(600);
+          $("#sensorKey").html('');
+          $("#sensorValue").html('');         
+          $.each($.parseJSON(data), function(key, value){
+            console.log(key, value)
+          $("#sensorKey").append(key + ': <br />');
+          $("#sensorValue").append(value + '<br /> ');
+          });
         }
       });
  }
