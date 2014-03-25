@@ -5,8 +5,6 @@
 # Home page
 GET     /                           controllers.Application.index()
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 #Landslip
 GET     /landslips                  controllers.LandslipController.landslips()
@@ -25,3 +23,12 @@ POST    /position                 controllers.PositionController.newPosition(sen
 
 #Graph
 GET     /landslip/:id/viewGraph   controllers.LandslipController.viewGraph(id:Long)
+
+#ajax
+GET     /sensor/:id/getSensorInformation controllers.SensorController.getSensorInformation(id:Long)
+
+# Javascript routing
+GET     /assets/javascripts/sensorjs controllers.SensorController.javascriptRoutes()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

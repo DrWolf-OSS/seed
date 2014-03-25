@@ -39,6 +39,7 @@ public class LandslipController extends Controller {
   public static Result viewGraph(Long id){
     return ok(views.html.graph.render(Landslip.findById(id)));
   }  
-
+  
+  
 
 }
