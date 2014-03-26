@@ -1,5 +1,5 @@
-  var scene
-  var container;
+  var scene, container;
+  var defaultMarkerSize;
   var camera, controls, scene, renderer;
   var time, maxTime;
   var markers, positions;
@@ -43,7 +43,9 @@ function init(p, pIds){
   
   //init slider
   initSlider();
-  geometry = new THREE.TetrahedronGeometry( 35,0 );
+
+  defaultMarkerSize = 35;
+  geometry = new THREE.TetrahedronGeometry( defaultMarkerSize,0 );
   
   //init markers
   markers = new Array();
@@ -172,10 +174,13 @@ function initControls(){
   
   f1 = gui.addFolder('Markers Settings');
   // Number field with slider
-  f1.add(obj, "size").min(10).max(50).step(1);
+  var markerSize = f1.add(obj, "size").min(10).max(70).step(5);
   //Open folder 1
   f1.open();
   gui.close();
+
+
+  markerSize.onChange(function(value){resizeMarkers(value);});
 }
 
 
@@ -318,6 +323,16 @@ function updateMarkers(){
   }
 }
 
+
+function resizeMarkers(newSize){
+  var meshSize = newSize / defaultMarkerSize;
+  for(var i in markers){
+    markers[i].particle.scale.set(meshSize,meshSize,meshSize);
+  }
+}
+
+
+
 function isLastdetection(){
   var ret;
   time > nextTime() ? ret= true : ret=false;
@@ -327,7 +342,8 @@ function isLastdetection(){
 
 /* Create new marker */
 function createMarker(position){
-  
+ 
+ 
   var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   object.material.side = THREE.DoubleSided;
