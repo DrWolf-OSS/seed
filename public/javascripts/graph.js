@@ -173,6 +173,9 @@ function initControls(){
   f1 = gui.addFolder('Markers Settings');
   // Number field with slider
   f1.add(obj, "size").min(10).max(50).step(1);
+  //Open folder 1
+  f1.open();
+  gui.close();
 }
 
 
