@@ -37,7 +37,10 @@ function init(p, pIds){
   //TODO: far scegliere velocità a utente
   tweenSpeed = 1000;
   transparencySpeed = 500;
-
+  
+  // init controls
+  initControls();
+  
   //init slider
   initSlider();
   geometry = new THREE.TetrahedronGeometry( 35,0 );
@@ -157,6 +160,21 @@ function makeGround(){
   var line = new THREE.Line( geometry, line_material, THREE.LinePieces );
   scene.add( line );
 }
+
+/* Initialize controls */ 
+function initControls(){ 
+  var obj = {
+    name: "Markers",
+    size: 35
+  };
+
+  var gui = new dat.GUI({autoplace: false}),
+  
+  f1 = gui.addFolder('Markers Settings');
+  // Number field with slider
+  f1.add(obj, "size").min(10).max(50).step(1);
+}
+
 
 /* Initialize render parameters*/
 function initRenderer(){
