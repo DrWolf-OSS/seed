@@ -169,9 +169,14 @@ function initControls(){
     name: "Markers",
     size: 35
   };
-
-  var gui = new dat.GUI({autoplace: false}),
+  var guiContainer = $("#guiContainer");
   
+  x=$("#container").position();
+  guiContainer.css('top',x.top+10 ); 
+  guiContainer.css('left', x.left+$("#container").width()-400);
+  
+  var gui = new dat.GUI({autoplace: false}),
+
   f1 = gui.addFolder('Markers Settings');
   // Number field with slider
   var markerSize = f1.add(obj, "size").min(10).max(70).step(5);
@@ -179,6 +184,8 @@ function initControls(){
   f1.open();
   gui.close();
 
+  var customContainer = document.getElementById('guiContainer');
+  customContainer.appendChild(gui.domElement);
 
   markerSize.onChange(function(value){resizeMarkers(value);});
 }

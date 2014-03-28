@@ -79,3 +79,10 @@ span.leftAlign {
   float: left;
   display: inline;
 }
+
+
+#guiContainer {
+  position: absolute;
+  z-index: 1;
+  top: 20px; 
+}
