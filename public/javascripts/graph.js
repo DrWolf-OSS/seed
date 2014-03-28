@@ -1,5 +1,5 @@
   var scene, container;
-  var defaultMarkerSize;
+  var defaultMarkerSize, ma, markerSizerkerSize;
   var camera, controls, scene, renderer;
   var time, maxTime;
   var markers, positions;
@@ -35,8 +35,9 @@ function init(p, pIds){
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
-  //tweenSpeed = 1000;
+  tweenSpeed = 1000;
   transparencySpeed = 500;
+  defaultMarkerSize =  markerSize = 35;
   
   // init controls
   initGuiControls();
@@ -44,8 +45,6 @@ function init(p, pIds){
   //init slider
   initSlider();
 
-  defaultMarkerSize = 35;
-  geometry = new THREE.TetrahedronGeometry( defaultMarkerSize,0 );
   
   //init markers
   markers = new Array();
@@ -167,7 +166,7 @@ function makeGround(){
 function initGuiControls(){ 
   var obj = {
     name: "Markers",
-    size: 35,
+    size: defaultMarkerSize,
     speed: 3
   };
   var guiContainer = $("#guiContainer");
@@ -339,6 +338,8 @@ function resizeMarkers(newSize){
   for(var i in markers){
     markers[i].particle.scale.set(meshSize,meshSize,meshSize);
   }
+  markerSize =  newSize;
+  if(halo) halo.scale.set(meshSize,meshSize.meshSize);
 }
 
 
@@ -354,6 +355,7 @@ function isLastdetection(){
 function createMarker(position){
  
  
+  geometry = new THREE.TetrahedronGeometry( markerSize ,0 );
   var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   object.material.side = THREE.DoubleSided;
