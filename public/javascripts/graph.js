@@ -35,11 +35,11 @@ function init(p, pIds){
   maxTime = getMaxTime(positions);
 
   //TODO: far scegliere velocità a utente
-  tweenSpeed = 1000;
+  //tweenSpeed = 1000;
   transparencySpeed = 500;
   
   // init controls
-  initControls();
+  initGuiControls();
   
   //init slider
   initSlider();
@@ -164,10 +164,11 @@ function makeGround(){
 }
 
 /* Initialize controls */ 
-function initControls(){ 
+function initGuiControls(){ 
   var obj = {
     name: "Markers",
-    size: 35
+    size: 35,
+    speed: 3
   };
   var guiContainer = $("#guiContainer");
   
@@ -180,6 +181,7 @@ function initControls(){
   f1 = gui.addFolder('Markers Settings');
   // Number field with slider
   var markerSize = f1.add(obj, "size").min(10).max(70).step(5);
+  var speed = f1.add(obj, "speed").min(1).max(5).step(1);
   //Open folder 1
   f1.open();
   gui.close();
@@ -188,6 +190,7 @@ function initControls(){
   customContainer.appendChild(gui.domElement);
 
   markerSize.onChange(function(value){resizeMarkers(value);});
+  speed.onChange(function(value){tweenSpeed = (1750- (value*250)) ;});
 }
 
 
