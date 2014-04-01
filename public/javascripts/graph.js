@@ -339,7 +339,7 @@ function resizeMarkers(newSize){
     markers[i].particle.scale.set(meshSize,meshSize,meshSize);
   }
   markerSize =  newSize;
-  if(halo) halo.scale.set(meshSize,meshSize.meshSize);
+  halo.scale.set(meshSize*1.4,meshSize*1.4, meshSize*1.4)
 }
 
 
