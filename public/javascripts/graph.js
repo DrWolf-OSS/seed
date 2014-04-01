@@ -1,5 +1,5 @@
-  var scene
-  var container;
+  var scene, container;
+  var defaultMarkerSize, markerSize;
   var camera, controls, scene, renderer;
   var time, maxTime;
   var markers, positions;
@@ -37,10 +37,14 @@ function init(p, pIds){
   //TODO: far scegliere velocità a utente
   tweenSpeed = 1000;
   transparencySpeed = 500;
-
+  defaultMarkerSize =  markerSize = 35;
+  
+  // init controls
+  initGuiControls();
+  
   //init slider
   initSlider();
-  geometry = new THREE.TetrahedronGeometry( 35,0 );
+
   
   //init markers
   markers = new Array();
@@ -157,6 +161,37 @@ function makeGround(){
   var line = new THREE.Line( geometry, line_material, THREE.LinePieces );
   scene.add( line );
 }
+
+/* Initialize controls */ 
+function initGuiControls(){ 
+  var obj = {
+    name: "Markers",
+    size: defaultMarkerSize,
+    speed: 3
+  };
+  var guiContainer = $("#guiContainer");
+  
+  x=$("#container").position();
+  guiContainer.css('top',x.top+10 ); 
+  guiContainer.css('left', x.left+$("#container").width()-400);
+  
+  var gui = new dat.GUI({autoplace: false}),
+
+  f1 = gui.addFolder('Markers Settings');
+  // Number field with slider
+  var markerSize = f1.add(obj, "size").min(10).max(70).step(5);
+  var speed = f1.add(obj, "speed").min(1).max(5).step(1);
+  //Open folder 1
+  f1.open();
+  gui.close();
+
+  var customContainer = document.getElementById('guiContainer');
+  customContainer.appendChild(gui.domElement);
+
+  markerSize.onChange(function(value){resizeMarkers(value);});
+  speed.onChange(function(value){tweenSpeed = (1750- (value*250)) ;});
+}
+
 
 /* Initialize render parameters*/
 function initRenderer(){
@@ -297,6 +332,18 @@ function updateMarkers(){
   }
 }
 
+
+function resizeMarkers(newSize){
+  var meshSize = newSize / defaultMarkerSize;
+  for(var i in markers){
+    markers[i].particle.scale.set(meshSize,meshSize,meshSize);
+  }
+  markerSize =  newSize;
+  halo.scale.set(meshSize*1.4,meshSize*1.4, meshSize*1.4)
+}
+
+
+
 function isLastdetection(){
   var ret;
   time > nextTime() ? ret= true : ret=false;
@@ -306,7 +353,9 @@ function isLastdetection(){
 
 /* Create new marker */
 function createMarker(position){
-  
+ 
+ 
+  geometry = new THREE.TetrahedronGeometry( markerSize ,0 );
   var object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { transparent: true, opacity: 0.2, color: Math.random() * 0xffffff } ) );
   object.material.ambient = object.material.color;
   object.material.side = THREE.DoubleSided;
@@ -475,7 +524,7 @@ function selectMarker(m){
   halo = new THREE.Mesh( geometry, haloMaterial );
   halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
   halo.position.set(selectedMarker.position.x, selectedMarker.position.y, selectedMarker.position.z);
-  halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
+  halo.scale.x = halo.scale.y = halo.scale.z = 1.4 * markerSize / defaultMarkerSize ;
   scene.add( halo );
 
   // display info about select marker
