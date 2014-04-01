@@ -1,5 +1,5 @@
   var scene, container;
-  var defaultMarkerSize, ma, markerSizerkerSize;
+  var defaultMarkerSize, markerSize;
   var camera, controls, scene, renderer;
   var time, maxTime;
   var markers, positions;
@@ -524,7 +524,7 @@ function selectMarker(m){
   halo = new THREE.Mesh( geometry, haloMaterial );
   halo.applyMatrix( new THREE.Matrix4().makeRotationAxis( new THREE.Vector3( -1, 0, -1 ).normalize(), Math.atan( Math.sqrt(2)) ) );
   halo.position.set(selectedMarker.position.x, selectedMarker.position.y, selectedMarker.position.z);
-  halo.scale.x = halo.scale.y = halo.scale.z = 1.4;
+  halo.scale.x = halo.scale.y = halo.scale.z = 1.4 * markerSize / defaultMarkerSize ;
   scene.add( halo );
 
   // display info about select marker
