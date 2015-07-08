@@ -33,15 +33,16 @@ function makeGround(){
 
   var terrainLoader = new THREE.TerrainLoader();
   terrainLoader.load('../data/ground.bin', function(data) {
-    var geometry = new THREE.PlaneGeometry(60, 60, 199, 199);
+    var geometry = new THREE.PlaneGeometry(1260, 1260, 30, 30);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = data[i] / 65535 * 10;
+      geometry.vertices[i].z = data[i] / 65535 * 150;
     }
     var material = new THREE.MeshPhongMaterial({
       color: 0xdddddd, 
       wireframe: true
     });
     var plane = new THREE.Mesh(geometry, material);
+    plane.applyMatrix( new THREE.Matrix4().makeTranslation( 0, 25, 0 ) );
     scene.add(plane);
   });
 
