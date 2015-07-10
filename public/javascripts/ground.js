@@ -32,7 +32,7 @@ function makePlaneGround(){
 function makeGround(){
 
   var terrainLoader = new THREE.TerrainLoader();
-  terrainLoader.load('data/ground.bin', function(data) {
+  terrainLoader.load('http://localhost:9000/assets/data/ground.bin', function(data) {
     var geometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
       geometry.vertices[i].z = data[i] / 65535 * 150;
@@ -43,7 +43,7 @@ function makeGround(){
     });
     var plane = new THREE.Mesh(geometry, material);
     var material = new THREE.MeshPhongMaterial({
-      map: THREE.ImageUtils.loadTexture('images/ground-texture.png')
+      map: THREE.ImageUtils.loadTexture('http://localhost:9000/assets/images/ground-texture.png')
     });
     var plane = new THREE.Mesh(geometry, material);
     scene.add(plane);
