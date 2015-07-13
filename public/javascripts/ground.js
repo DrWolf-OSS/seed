@@ -35,7 +35,7 @@ function makeGround(){
   terrainLoader.load('http://localhost:9000/assets/data/ground.bin', function(data) {
     var geometry = new THREE.PlaneGeometry(1000, 1000, 10, 10);
     for (var i = 0, l = geometry.vertices.length; i < l; i++) {
-      geometry.vertices[i].z = data[i] / 65535 * 150;
+      geometry.vertices[i].z = data[i] / 65535 * 200;
     }
     var material = new THREE.MeshPhongMaterial({
       color: 0xdddddd, 
@@ -46,6 +46,11 @@ function makeGround(){
       map: THREE.ImageUtils.loadTexture('http://localhost:9000/assets/images/ground-texture.png')
     });
     var plane = new THREE.Mesh(geometry, material);
+    // Orizzontale
+    //plane.rotation.x =-( Math.PI / 2);
+    
+    plane.rotation.x =-( Math.PI / 2.3);
+    plane.position.set(0,-120,0)
     scene.add(plane);
   });
 
