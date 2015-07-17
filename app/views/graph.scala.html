@@ -22,7 +22,7 @@
           <script type="text/javascript" src="@routes.SensorController.javascriptRoutes()"></script>
 
           <div id="container" > </div>
-          <canvas id="myCanvas"></canvas>
+          <canvas id="myCanvas" style="height:0px"></canvas>
 
           <div id="sensorLabel" >
             <div id="sensorKey"></div>
@@ -96,6 +96,7 @@
 
             var positions = [];
             var ids = [];
+            var names = [];
             var i = 0;
             var time = 0;
 
@@ -108,7 +109,8 @@
                 positions[i][time][1] = @position.y;
                 positions[i][time][2] = @position.z;
               }
-              ids[i]= @sensor.id
+              ids[i]= @sensor.id;
+              names[i] = "@sensor.name";
               i++;
 
             }
