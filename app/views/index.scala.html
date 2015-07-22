@@ -1,28 +1,7 @@
-@(message: String, form: Form[Landslip])
+@(message: String)
 
-@import play.i18n._
-@import helper.twitterBootstrap._
+@main("Welcome to Play", "", "") {
 
-@main("Login") {
-
-
-<div class="span4 offset4" >
-
-
-    <p>
-    <input class="span12 " type="text" name="username"
-    value="@form("name").value" placeholder="username" >
-    </->
-    <p>
-    <input class="span12" type="password"
-    value="@form("description").value" name="password" placeholder="password">
-    </->
-    <p>
-    <button class="btn btn-warning btn-block" style="text-align:right;height:3em;" type="submit">
-      <i class="icon-signin icon-2x"></i>&nbsp; &nbsp;
-    </button>
-    </p>
-
-
+    @play20.welcome(message, style = "Java")
 
 }

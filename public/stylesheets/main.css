@@ -1,0 +1,89 @@
+
+
+
+body .modal {
+  max-height: 80%;
+  min-height: 80%;
+  width: 90%; /* desired relative width */
+  left: 5%; /* (100%-width)/2 */
+  /* place center */
+  margin-left:auto;
+  margin-right:auto;
+  display: none;
+}
+
+.modal-body {
+  max-height: 10%;
+}
+.modal-footer{
+  position: absolute;
+  top: 100;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+
+}
+
+.canvas{
+  width: 90%;
+  max-height: 80%;
+  border: 1px solid #000000;
+}
+
+.slider .slider-selection{
+  background: #BABABA;
+}
+
+span.leftAlign {
+  float: left;
+}
+
+.graphControls{
+  display: block;
+  height:2em;
+  float: left;
+  vertical-align: bottom;
+  margin-top: 50px;
+}
+
+.graphControls > *{
+  margin-left:50px;
+}
+
+#sensorLabel {
+  /* Fallback for web browsers that doesn't support RGBa */
+  /*background: rgb(0, 0, 0) transparent;*/
+  /* RGBa with 0.6 opacity */
+  /*background: rgba(0, 0, 0, 0.1);*/
+  background: rgba(255, 255, 255, 0.5);
+  position: absolute;
+  z-index: 1;
+  left: 50px; 
+  top: 20px; 
+  width:200px; 
+  height:50px; 
+  padding: 10px;
+  display: none;
+  border: solid 1px black;
+}
+
+
+#sensorKey {
+  width: 50px;
+  text-align: right;
+  float: left;
+  display: inline;
+}
+
+#sensorValue {
+  float: left;
+  display: inline;
+}
+
+
+#guiContainer {
+  position: absolute;
+  z-index: 1;
+  top: 20px; 
+}

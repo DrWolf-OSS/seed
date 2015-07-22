@@ -1,31 +1,57 @@
 @(landslips: List[Landslip], landslipForm: Form[Landslip])
 
   @import helper._
+  @import helper.twitterBootstrap._
+  @header(key:String, title:String) = {
+  <th>
+    @title
+  </th>
 
-  @main("Franes") {
-   <div class="span4 offset1">
-    <h1>@landslips.size() landslip(s)</h1>
+  }
 
-      <ul>
+
+
+  @main("Franes", "Home", "") {
+    <div class="span10 offset1">
+      <table class="table table-bordered table-bordered  table-striped">
+        <thead>
+          <tr>
+            <th>nome</th>
+            <th>descrizione</th>
+            <th>azioni</th>
+          </tr>
+        </thead>
+        </thead>
+      <tbody>
       @for(landslip <- landslips) {
-        <li>
-          @landslip.name
+      <tr>
 
+        <td><a href="@routes.LandslipController.view(landslip.id)">@landslip.name</a></td>
+        <td>@landslip.description</td>
+        <td>
           @form(routes.LandslipController.deleteLandslip(landslip.id)) {
-            <input type="submit" value="Delete">
+            <button type="submit" class="btn btn-default">Elimina</button>
           }
-        </input>
+        </td>
+      </tr>
       }
-    </li>
+      <tr>
+        @form(routes.LandslipController.newLandslip()) {
+        <td>@inputText(landslipForm("name"), '_label -> "")</td>
+          <td>@inputText(landslipForm("description"), '_label -> "")</td>
+          <td><input type="submit" value="Crea nuova" class="btn btn-default" ></td>
+        }
+      </tr>
+    </tbody>
 
-      <h2>Aggiungi una frana</h2>
+    </table>
 
-      @form(routes.LandslipController.newLandslip()) {
-
-        @inputText(landslipForm("name"))
-
-          <input type="submit" value="Create">
-
-      }
    </div>
+
+
+
+
+
+
+
   }

@@ -1,0 +1,126 @@
+@(landslip: Landslip)
+@import helper._
+
+@main("Franes", landslip.name, landslip.description) {
+
+<div class="span10 offset1">
+
+ <span style="display: none"> Time: <span id="tempoId">start </span> </span>
+
+
+ 
+          <script src="@routes.Assets.at("javascripts/three.js")" type="text/javascript"></script>
+          <script src="@routes.Assets.at("javascripts/TrackballControls.js")" type="text/javascript"></script>
+          <script src="@routes.Assets.at("javascripts/graph.js")"></script>
+          <script src="@routes.Assets.at("javascripts/bootstrap-slider.js")" type="text/javascript"></script>
+          <script src="@routes.Assets.at("javascripts/tween.js")" type="text/javascript"></script>
+          <script src="@routes.Assets.at("javascripts/dat.gui.min.js")" type="text/javascript"></script>
+          <script src="@routes.Assets.at("javascripts/ground.js")" type="text/javascript"></script>
+          <script src="@routes.Assets.at("javascripts/TerrainLoader.js")" type="text/javascript"></script>
+
+
+          <script type="text/javascript" src="@routes.SensorController.javascriptRoutes()"></script>
+
+          <div id="container" > </div>
+          <canvas id="myCanvas" style="height:0px"></canvas>
+
+          <div id="sensorLabel" >
+            <div id="sensorKey"></div>
+            <div id="sensorValue"></div>
+          </div>
+
+          <div id="guiContainer"> </div>
+          <script type="text/javascript">
+            x=$("#container").position();
+            $("#sensorLabel").css('top',x.top+10 ); 
+            $("#sensorLabel").css('left', x.left+10);
+          </script>
+
+          <script id="vertexShader" type="x-shader/x-vertex">
+            varying vec3 vNormal;
+            void main()  
+            {
+              vNormal = normalize( normalMatrix * normal );
+              gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+            }
+          </script>
+
+          <!-- fragment shader a.k.a. pixel shader -->
+          <script id="fragmentShader" type="x-shader/x-vertex"> 
+            varying vec3 vNormal;
+            void main() 
+            {
+              float intensity = pow( 0.7 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) ), 3.0 ); 
+              gl_FragColor = vec4( 5.0, 5.0, 5.0, 5.0 ) * intensity;
+            }
+          </script>
+
+
+
+          <script>
+            if (top.location != location) {
+              top.location.href = document.location.href ;
+            }
+            $(function(){
+
+              $('#slider').slider({
+                formater: function(value) {
+                  return 'Rilevazione: '+value;
+                },
+                min: 1,
+                orientation: 'horizontal',
+                value:1
+              });
+            });
+          </script>
+          
+          <div class="graphControls"> 
+            <span class="controlComponent"  >
+              Tempo:&nbsp;&nbsp;&nbsp;&nbsp;
+              <span id="sliderSpan">
+                <input type="text" class="slider"  id="slider" data-slider-max="20" >
+              </span>
+            </span>
+
+
+            <span>
+              <button class="btn fa fa-pause controlComponent " id="playBtn" onClick="toggleTweenPlay()" value="play"></button>
+            </span>
+          </div> 
+
+
+
+
+
+          <script>
+
+            var positions = [];
+            var ids = [];
+            var names = [];
+            var i = 0;
+            var time = 0;
+
+            @for(sensor<- landslip.sensors){
+              positions[i] = [];
+              @for(position<- sensor.positions){
+                time = @position.t;
+                positions[i][time] = new Array(3);
+                positions[i][time][0] = @position.x;
+                positions[i][time][1] = @position.y;
+                positions[i][time][2] = @position.z;
+              }
+              ids[i]= @sensor.id;
+              names[i] = "@sensor.name";
+              i++;
+
+            }
+            backGroundImg= '@routes.Assets.at("images/frana.png")';
+            glowImg= '@routes.Assets.at("images/glow.png")';
+            init(positions, ids);
+          </script>
+
+
+  }
+
+
+

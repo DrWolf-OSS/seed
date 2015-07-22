@@ -3,18 +3,32 @@
 # ~~~~
 
 # Home page
-GET     /index                      controllers.Application.index()
 GET     /                           controllers.Application.index()
 
-# Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
 #Landslip
 GET     /landslips                  controllers.LandslipController.landslips()
 POST    /landslips                  controllers.LandslipController.newLandslip()
 POST    /landslip/:id/delete        controllers.LandslipController.deleteLandslip(id: Long)
+GET     /landslip/:id               controllers.LandslipController.view(id:Long)
 
+#Sensor
+POST    /sensor/:id/delete        controllers.SensorController.delete(id: Long, landslipId: Long)
+POST    /sensor                   controllers.SensorController.newSensor(landslipId: Long)
+GET     /sensor/:id               controllers.SensorController.view(id: Long)
 
-#Webjar
-GET     /webjars/*file                    controllers.WebJarAssets.at(file)
+#Position
+POST    /position/:id/delete      controllers.PositionController.delete(id: Long, sensorId: Long)
+POST    /position                 controllers.PositionController.newPosition(sensorId: Long)
 
+#Graph
+GET     /landslip/:id/viewGraph   controllers.LandslipController.viewGraph(id:Long)
+
+#ajax
+GET     /sensor/:id/getSensorInformation controllers.SensorController.getSensorInformation(id:Long)
+
+# Javascript routing
+GET     /assets/javascripts/sensorjs controllers.SensorController.javascriptRoutes()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

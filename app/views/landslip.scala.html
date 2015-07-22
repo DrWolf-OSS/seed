@@ -1,0 +1,51 @@
+@(landslip: Landslip, sensorForm: Form[Sensor])
+@import helper._
+
+@main("Franes", landslip.name, landslip.description) {
+
+<div class="span10 offset1">
+
+
+
+  <div class="span10 offset1">
+    <table class="table table-bordered table-bordered  table-striped">
+      <thead>
+        <tr>
+          <th>nome sensore</th>
+          <th>azioni</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for(sensor<- landslip.sensors){
+        <tr>
+          <td><a href="@routes.SensorController.view(sensor.id)">@sensor.name</a></td>
+          <td>
+            @form(routes.SensorController.delete(sensor.id, landslip.id)) {
+            <button type="submit" class="btn btn-default">Elimina</button>
+            }
+          </td>
+          }
+        </tr>
+
+
+        <tr>
+          @form(routes.SensorController.newSensor(landslip.id)){
+          <td>@inputText(sensorForm("name"), '_label -> "")</td>
+          <td><input type="submit" value="Crea nuovo sensore" class="btn btn-default"></td>
+          }
+        </tr>
+      </tbody>
+    </table>
+
+
+    @form(routes.LandslipController.viewGraph(landslip.id)){
+      <button class="btn btn-default" >
+        Grafico 
+      </button>
+    }
+   
+}
+
+
+
+
