@@ -199,7 +199,7 @@ THREE.RGBA_PVRTC_2BPPV1_Format = 2103;
 
 THREE.Projector = function () {
 
-  THREE.error( 'THREE.Projector has been moved to /examples/js/renderers/Projector.js.' );
+  //THREE.error( 'THREE.Projector has been moved to /examples/js/renderers/Projector.js.' );
 
   this.projectVector = function ( vector, camera ) {
 

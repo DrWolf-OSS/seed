@@ -163,7 +163,6 @@ function initRenderer() {
 		if ( !ctx) {
 			renderer = new THREE.CanvasRenderer();
 		} else {
-			//renderer = new THREE.CanvasRenderer();
 			renderer = new THREE.WebGLRenderer( { antialias: false } );
 		}
 	}
@@ -434,22 +433,11 @@ function createMarkerTracks(positionArray, time) {
     opacity: 1
   });
   
-  /*var lineGeometry = new THREE.Geometry();
-  for(var i=0; i <= time; i++) {
-    lineGeometry.vertices.push(new THREE.Vector3(positionArray[i][0], positionArray[i][1] + markerSize, positionArray[i][2]));
-  }*/
   var lineGeometry = new THREE.BufferGeometry();
   var geomPositions = new Float32Array( MAX_POINTS * 3 ); // 3 vertices per point
   lineGeometry.addAttribute( 'position', new THREE.BufferAttribute( geomPositions, 3 ), null, null );
-  //lineGeometry.addAttribute( 'position', Array, MAX_POINTS, 3);
   lineGeometry.lastIdx = 0;
   for(var i=0; i <= time; i++) {
-    /*lineGeometry.attributes.position.array[3*i] = positionArray[i][0];
-    lineGeometry.attributes.position.array[3*i + 1] = positionArray[i][1] + markerSize * 2 / 3;
-    lineGeometry.attributes.position.array[3*i + 2] = positionArray[i][2];*/
-    /*lineGeometry.attributes.position.array.push(positionArray[i][0]);
-    lineGeometry.attributes.position.array.push(positionArray[i][1] + markerSize * 2 / 3);
-    lineGeometry.attributes.position.array.push(positionArray[i][2]);*/
     lineGeometry.attributes.position.setXYZ( lineGeometry.lastIdx, positionArray[i][0], positionArray[i][1] + markerSize * 2 / 3, positionArray[i][2] );
     lineGeometry.lastIdx++;
   }
@@ -487,7 +475,6 @@ function setupTween(index){
   var nextPosition = positions[index][nextTime()];
   
   if(position != null && nextPosition != null){  
-    //tweenPositions[index] = {x: position[0], y: position[1], z: position[2]};
     markers[index].tweens.push(new TWEEN.Tween(markers[index].currentPosition)
       .to({x: nextPosition[0]}, tweenSpeed)
       .start());
@@ -602,7 +589,6 @@ function onClick( e ) {
   mouseVector.y = 1 - 2 * ((e.clientY - renderer.domElement.offsetTop)/ containerHeight );
   
   // cast ray orthogonal to the camera
-  //var raycaster = projector.pickingRay( mouseVector.clone(), camera );
   projector.unprojectVector( mouseVector, camera );
   var raycaster = new THREE.Raycaster( camera.position, mouseVector.sub( camera.position ).normalize() );
   
@@ -621,6 +607,7 @@ function onClick( e ) {
   }
   
   // indica il punto del piano che è stato cliccato!
+  // commentato, serve solo in fase di setup dei marker
   /*var planeIntersects = raycaster.intersectObject(plane, true);
   if (planeIntersects.length > 0) {
 	  console.log(planeIntersects[0].point);
@@ -628,9 +615,18 @@ function onClick( e ) {
 }
 
 // select and highlight a marker
-function selectMarker(m){
-	//remove precedent halo
-	removeSelection();
+function selectMarker(m) {
+  if (halo) {
+    var prevHalo = halo.clone();
+
+    //remove precedent halo
+    removeSelection();
+    
+    if (prevHalo.position.x === m.position.x && prevHalo.position.y === m.position.y && prevHalo.position.z === m.position.z) {
+      $("#sensorLabel").hide()
+      return;
+    }
+  }
 	
 	// save selected marker information in global scope
 	selectedMarker = m;
