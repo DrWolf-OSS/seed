@@ -431,7 +431,7 @@ function createMarkerTracks(positionArray, time) {
     color: 0x44ff22,
     linewidth: 3,
     transparent: true,
-    opacity: 0.5
+    opacity: 1
   });
   
   /*var lineGeometry = new THREE.Geometry();
