@@ -1,7 +1,7 @@
 @(landslip: Landslip)
 @import helper._
 
-@main("Franes", landslip.name, landslip.description) {
+@main("Seed4d", landslip.name, landslip.description) {
 
 <div class="span10 offset1">
 
@@ -115,6 +115,8 @@
 
             }
             backGroundImg= '@routes.Assets.at("images/frana.png")';
+            terrainHeightMap= '@routes.Assets.at("images/smoothTerrain.jpg")';
+            terrainTextureImg= '@routes.Assets.at("images/grass.jpg")';
             glowImg= '@routes.Assets.at("images/glow.png")';
             init(positions, ids);
           </script>
