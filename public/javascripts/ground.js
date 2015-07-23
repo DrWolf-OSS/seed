@@ -85,7 +85,7 @@ function makeGroundFromHeightMap() {
 		// MATERIAL 2
 		var material = new THREE.MeshPhongMaterial({
 			//map: THREE.ImageUtils.loadTexture('/assets/images/jotunheimen-texture.jpg')
-			map: THREE.ImageUtils.loadTexture('/assets/images/grass.jpg')
+			map: THREE.ImageUtils.loadTexture(terrainTextureImg)//'/assets/images/grass.jpg')
 		});
 		material.map.wrapS = material.map.wrapT = THREE.RepeatWrapping;
 		material.map.repeat.set(4,4);
@@ -101,7 +101,7 @@ function makeGroundFromHeightMap() {
 		
 		animate();
 	};
-	img.src = "/assets/images/smoothTerrain.jpg";
+	img.src = terrainHeightMap;//"/assets/images/smoothTerrain.jpg";
   
 }
 
